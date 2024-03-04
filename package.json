@@ -1,0 +1,22 @@
+{
+  "name": "time-tracker-application",
+  "version": "1.0.0",
+  "description": "## Diplomarbeit 2024 S. Fluor",
+  "main": "script.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sascha1987/time-tracker-application.git"
+  },
+  "author": "S. Fluor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sascha1987/time-tracker-application/issues"
+  },
+  "homepage": "https://github.com/sascha1987/time-tracker-application#readme"
+}
