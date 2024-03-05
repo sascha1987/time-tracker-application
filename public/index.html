@@ -3,9 +3,70 @@
     <head>
         <meta charset="UTF-8">
         <title>TimeTrackingApp</title>
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="./css/style.css">
     </head>
-<body>
+    <body>
+        
+        <header>
+            <div class="header-content">
+                <h1>Time Recording</h1>
+            </div>
+            <div class="date-selection">
+                Month: <select id="monthInput">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+                Year: <input type="text" id="yearInput"readonly>
+            </div>
+            <div>
+                <button id="saveButton">save</button>
+            </div>
+        </header>
     
-</body>
+        <section class="time-tracking">
+            <div class="employer">
+                <label>Employer: VP Bank</label>
+            </div>
+            <div class="employee">
+                <label>Employee:</label>
+                <input type="text" placeholder="Vorname">
+                <input type="text" placeholder="Nachname">
+                <input type="text" placeholder="Personalnummer">
+            </div>
+        </section>
+    
+        <table id="timeSheet">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Start Working</th>
+                    <th>Stop Working</th>
+                    <th>Start Working</th>
+                    <th>Stop Working</th>               
+                    <th>Working Hours</th>
+                    <th>Overtime</th>
+                    <th>Comment</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    
+        <footer>
+
+        </footer>
+    
+        <script src="script.js"></script>
+    </body>
 </html>
