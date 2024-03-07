@@ -1,17 +1,15 @@
-//create line for every day in a month
 function createDaysForMonth(year, month) {
   const tableBody = document.getElementById("timeSheet").querySelector("tbody");
-  tableBody.innerHTML = ""; //----> delete lines if there are any
+  tableBody.innerHTML = "";
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   console.log("daysInMonth ", daysInMonth);
 
   for (let day = 1; day <= daysInMonth; day++) {
-    //--> Do I need this?!    const date = new Date(year, month, day);
     const formattedDate = `${day.toString().padStart(2, "0")}.${(month + 1)
       .toString()
       .padStart(2, "0")}.${year}`;
-    console.log("formattedDate ", formattedDate);
+    //    console.log("formattedDate ", formattedDate);
 
     const row = tableBody.insertRow();
 
@@ -59,15 +57,15 @@ document.getElementById("yearInput").addEventListener("change", function () {
 });
 
 function updateDays() {
-  const month = parseInt(document.getElementById("monthInput").value, 10) - 1; // -1 because month start at 0
-  const year = parseInt(document.getElementById("yearInput").value, 10); // @TODO Delete Comment
+  const month = parseInt(document.getElementById("monthInput").value, 10) - 1;
+  const year = parseInt(document.getElementById("yearInput").value, 10);
   createDaysForMonth(year, month);
 }
 
 function init() {
   const date = new Date();
-  document.getElementById("monthInput").value = date.getMonth() + 1; // +1 because month start at 0
-  document.getElementById("yearInput").value = date.getFullYear(); // @TODO Delete Comment
+  document.getElementById("monthInput").value = date.getMonth() + 1;
+  document.getElementById("yearInput").value = date.getFullYear();
   updateDays();
 }
 init();
