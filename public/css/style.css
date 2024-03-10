@@ -1,3 +1,12 @@
+:root {
+    --background-color: #f4f4f4;
+    --primary-color: #00376e;;
+    --secondary-color: #f2f2f2;
+    --text-color: #333;
+    --border-color: #ddd;
+    --header-footer-bg-color: lightblue;
+}
+
 body {
     font-family: 'Open Sans', sans-serif;
     margin: 0;
@@ -7,7 +16,7 @@ body {
 #saveButton {
     padding: 5px 10px;
     margin-top: 10px;
-    background-color: #1b497a;
+    background-color: #00376e;;
     color: white;
     border: none;
     border-radius: 5px;
@@ -18,6 +27,7 @@ body {
 }
 
 header, .time-tracking, table, footer {
+    background: var(--header-footer-bg-color);
     margin-bottom: 20px;
     padding: 15px;
     border-radius: 8px;
@@ -26,4 +36,40 @@ header, .time-tracking, table, footer {
 
 header h1 {
     text-align: center;
+}
+
+.time-tracking {
+    display: flex;
+    justify-content: space-between;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid var(--border-color);
+}
+
+th {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: left;
+    padding: 12px;
+}
+
+td {
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: var(--secondary-color);
+}
+
+@media screen and (max-width: 600px) {
+    .time-tracking {
+        flex-direction: column;
+        align-items: center;
+    }
 }
