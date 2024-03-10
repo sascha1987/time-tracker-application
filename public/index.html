@@ -68,6 +68,10 @@
 
         </footer>
     
-        <script src="../src/view/TimeSheetView.js"></script>
+        <!--<script type="module" src="../src/view/TimeSheetView.js"></script>-->
+        <script type="module">
+            import { init } from '../src/view/TimeSheetView.js';
+            document.addEventListener('DOMContentLoaded', init);
+          </script>
     </body>
 </html>

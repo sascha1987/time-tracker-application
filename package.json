@@ -2,12 +2,14 @@
   "name": "time-tracker-application",
   "version": "1.0.0",
   "description": "## Diplomarbeit 2024 S. Fluor",
+  "type": "module",
   "main": "script.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "npm run test"
+    "start": "node TimeSheetView.test.js",
+    "test": "mocha \"test/**/*.js\""
   },
   "repository": {
     "type": "git",
@@ -18,5 +20,13 @@
   "bugs": {
     "url": "https://github.com/sascha1987/time-tracker-application/issues"
   },
-  "homepage": "https://github.com/sascha1987/time-tracker-application#readme"
+  "homepage": "https://github.com/sascha1987/time-tracker-application#readme",
+  "devDependencies": {
+    "chai": "^5.1.0",
+    "jsdom": "^24.0.0",
+    "mocha": "^10.3.0"
+  },
+  "dependencies": {
+    "babel-register": "^6.26.0"
+  }
 }

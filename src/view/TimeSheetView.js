@@ -1,71 +1,63 @@
-function createDaysForMonth(year, month) {
-  const tableBody = document.getElementById("timeSheet").querySelector("tbody");
-  tableBody.innerHTML = "";
-
+export function calculateDaysForMonth(year, month) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  console.log("daysInMonth ", daysInMonth);
+  const daysArray = [];
 
   for (let day = 1; day <= daysInMonth; day++) {
     const formattedDate = `${day.toString().padStart(2, "0")}.${(month + 1)
       .toString()
       .padStart(2, "0")}.${year}`;
-    //    console.log("formattedDate ", formattedDate);
-
-    const row = tableBody.insertRow();
-
-    // date
-    let cell = row.insertCell();
-    console.log("cell ", cell);
-    cell.innerHTML = `<div class="date">${formattedDate}</div>`;
-
-    // start
-    cell = row.insertCell();
-    cell.innerHTML = '<input type="time" class="time-start">';
-
-    // end
-    cell = row.insertCell();
-    cell.innerHTML = '<input type="time" class="time-end">';
-
-    // start
-    cell = row.insertCell();
-    cell.innerHTML = '<input type="time" class="time-start-1">';
-
-    // end
-    cell = row.insertCell();
-    cell.innerHTML = '<input type="time" class="time-end-1">';
-
-    // working hours
-    cell = row.insertCell();
-    cell.innerHTML = '<input type="text" class="hours-normal" readonly>';
-
-    // overtime
-    cell = row.insertCell();
-    cell.innerHTML = '<input type="text" class="overtime" readonly>';
-
-    // comment section
-    cell = row.insertCell();
-    cell.innerHTML = '<input type="text" class="comments">';
+    daysArray.push({ date: formattedDate });
   }
+  return daysArray;
 }
 
-document.getElementById("monthInput").addEventListener("change", function () {
-  updateDays();
-});
+function updateDOMWithDays(year, month) {
+  const tableBody = document.getElementById("timeSheet").querySelector("tbody");
+  tableBody.innerHTML = "";
 
-document.getElementById("yearInput").addEventListener("change", function () {
-  updateDays();
-});
+  const daysArray = calculateDaysForMonth(year, month);
+
+  daysArray.forEach((day) => {
+    const row = tableBody.insertRow();
+
+    let cell = row.insertCell();
+    cell.innerHTML = `<div class="date">${day.date}</div>`;
+    cell = row.insertCell();
+    cell.innerHTML = '<input type="time" class="time-start">';
+    cell = row.insertCell();
+    cell.innerHTML = '<input type="time" class="time-end">';
+    cell = row.insertCell();
+    cell.innerHTML = '<input type="time" class="time-start-1">';
+    cell = row.insertCell();
+    cell.innerHTML = '<input type="time" class="time-end-1">';
+    cell = row.insertCell();
+    cell.innerHTML = '<input type="text" class="hours-normal" readonly>';
+    cell = row.insertCell();
+    cell.innerHTML = '<input type="text" class="overtime" readonly>';
+    cell = row.insertCell();
+    cell.innerHTML = '<input type="text" class="comments">';
+  });
+}
 
 function updateDays() {
   const month = parseInt(document.getElementById("monthInput").value, 10) - 1;
   const year = parseInt(document.getElementById("yearInput").value, 10);
-  createDaysForMonth(year, month);
+  updateDOMWithDays(year, month);
 }
 
-function init() {
+export function init() {
+  if (typeof document !== "undefined") {
+    document.getElementById("monthInput").addEventListener("change", updateDays);
+    document.getElementById("yearInput").addEventListener("change", updateDays);
+
+    const date = new Date();
+    document.getElementById("monthInput").value = date.getMonth() + 1;
+    document.getElementById("yearInput").value = date.getFullYear();
+    updateDays();
+  }
+
   const date = new Date();
   document.getElementById("monthInput").value = date.getMonth() + 1;
   document.getElementById("yearInput").value = date.getFullYear();
   updateDays();
 }
-init();
