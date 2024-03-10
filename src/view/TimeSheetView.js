@@ -11,7 +11,7 @@ export function calculateDaysForMonth(year, month) {
   return daysArray;
 }
 
-function updateDOMWithDays(year, month) {
+export function updateDOMWithDays(year, month) {
   const tableBody = document.getElementById("timeSheet").querySelector("tbody");
   tableBody.innerHTML = "";
 

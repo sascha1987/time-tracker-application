@@ -1,12 +1,29 @@
-//import { JSDOM } from "jsdom";
+import { JSDOM } from "jsdom";
 import { expect } from "chai";
 import { describe, it, before, after } from "mocha";
 import { calculateDaysForMonth, updateDOMWithDays } from "../../src/view/TimeSheetView.js";
 
-// before(() => {
-//   const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>");
-//   global.document = dom.window.document;
-// });
+let dom, document;
+
+before(() => {
+  dom = new JSDOM(`<!DOCTYPE html><html><body>
+    <table id="timeSheet"><tbody></tbody></table>
+  </body></html>`);
+  document = dom.window.document;
+  global.document = document;
+});
+
+describe("updateDOMWithDays", function () {
+  it("should update the DOM based on the given year and month", function () {
+    const year = 2020;
+    const month = 0;
+
+    updateDOMWithDays.call({ document }, year, month);
+    const tableBody = document.querySelector("#timeSheet tbody");
+
+    expect(tableBody.rows.length).to.equal(31);
+  });
+});
 
 describe("calculateDaysForMonth", function () {
   it("should return 31 days for January 2020", function () {
@@ -25,6 +42,6 @@ describe("calculateDaysForMonth", function () {
   });
 });
 
-// after(() => {
-//   delete global.document;
-// });
+after(() => {
+  delete global.document;
+});
