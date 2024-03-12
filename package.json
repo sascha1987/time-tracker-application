@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/sascha1987/time-tracker-application#readme",
   "devDependencies": {
+    "@babel/core": "^7.24.0",
     "chai": "^5.1.0",
     "jsdom": "^24.0.0",
     "mocha": "^10.3.0"
