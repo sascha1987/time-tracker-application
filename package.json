@@ -2,8 +2,11 @@
   "name": "time-tracker-application",
   "version": "1.0.0",
   "description": "## Diplomarbeit 2024 S. Fluor",
+  
+  "name": "dein-projekt-name",
+  "version": "1.0.0",
   "babel": {
-    "presets": ["@babel/preset-env"]
+      "presets": ["@babel/preset-env"]
   },
   "type": "module",
   "main": "script.js",
@@ -26,7 +29,6 @@
   "homepage": "https://github.com/sascha1987/time-tracker-application#readme",
   "devDependencies": {
     "@babel/core": "^7.x.x",
-    "@babel/register": "^7.x.x",
     "@babel/preset-env": "^7.x.x",
     "chai": "^5.1.0",
     "jsdom": "^24.0.0",
