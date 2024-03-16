@@ -61,3 +61,36 @@ export function init() {
   document.getElementById("yearInput").value = date.getFullYear();
   updateDays();
 }
+
+function calculateWorkingHours() {
+  const rows = document.getElementById("timeSheet").querySelectorAll("tbody tr");
+
+  Array.from(rows).forEach((row) => {
+    const startTime = row.querySelector(".time-start").value;
+    const endTime = row.querySelector(".time-end").value;
+    const hoursNormal = row.querySelector(".hours-normal");
+
+    let totalHours = 0;
+
+    if (startTime && endTime) {
+      const start = new Date(`01/01/2000 ${startTime}`);
+      const end = new Date(`01/01/2000 ${endTime}`);
+      const diff = (end - start) / (1000 * 60 * 60);
+      totalHours += diff;
+      console.log("Total: ", totalHours);
+    }
+
+    //    const normalWorkingHours = 8 + 24 / 60;
+
+    hoursNormal.value = totalHours > 0 ? totalHours.toFixed(2) : "";
+  });
+}
+
+document.getElementById("timeSheet").addEventListener("change", (event) => {
+  if (
+    event.target.classList.contains("time-start") ||
+    event.target.classList.contains("time-end")
+  ) {
+    calculateWorkingHours();
+  }
+});

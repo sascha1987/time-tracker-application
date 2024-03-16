@@ -2,9 +2,6 @@
   "name": "time-tracker-application",
   "version": "1.0.0",
   "description": "## Diplomarbeit 2024 S. Fluor",
-  
-  "name": "dein-projekt-name",
-  "version": "1.0.0",
   "babel": {
       "presets": ["@babel/preset-env"]
   },
