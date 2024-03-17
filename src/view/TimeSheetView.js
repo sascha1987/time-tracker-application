@@ -50,6 +50,15 @@ export function init() {
     document.getElementById("monthInput").addEventListener("change", updateDays);
     document.getElementById("yearInput").addEventListener("change", updateDays);
 
+    document.getElementById("timeSheet").addEventListener("change", (event) => {
+      if (
+        event.target.classList.contains("time-start") ||
+        event.target.classList.contains("time-end")
+      ) {
+        calculateWorkingHours();
+      }
+    });
+
     const date = new Date();
     document.getElementById("monthInput").value = date.getMonth() + 1;
     document.getElementById("yearInput").value = date.getFullYear();
@@ -88,12 +97,3 @@ function calculateWorkingHours() {
     }
   });
 }
-
-document.getElementById("timeSheet").addEventListener("change", (event) => {
-  if (
-    event.target.classList.contains("time-start") ||
-    event.target.classList.contains("time-end")
-  ) {
-    calculateWorkingHours();
-  }
-});
