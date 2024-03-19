@@ -91,8 +91,6 @@ function calculateWorkingHours() {
       const end = new Date(`01/01/2000 ${endTime}`);
       const diff = (end - start) / (1000 * 60 * 60);
       totalHours += diff;
-      console.log("total: ", totalHours);
-      console.log("diff: ", diff);
     }
     if (totalHours > 0) {
       hoursNormal.value = totalHours.toFixed(2);
@@ -106,8 +104,6 @@ function calculateWorkingHours() {
       const end1 = new Date(`01/01/2000 ${endTime1}`);
       const diff1 = (end1 - start1) / (1000 * 60 * 60);
       totalHours += diff1;
-      console.log("total: ", totalHours);
-      console.log("diff1: ", diff1);
     }
     if (totalHours > 0) {
       hoursNormal.value = totalHours.toFixed(2);
