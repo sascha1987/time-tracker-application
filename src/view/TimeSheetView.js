@@ -53,7 +53,9 @@ export function init() {
     document.getElementById("timeSheet").addEventListener("change", (event) => {
       if (
         event.target.classList.contains("time-start") ||
-        event.target.classList.contains("time-end")
+        event.target.classList.contains("time-end") ||
+        event.target.classList.contains("time-start-1") ||
+        event.target.classList.contains("time-end-1")
       ) {
         calculateWorkingHours();
       }
@@ -77,23 +79,59 @@ function calculateWorkingHours() {
   Array.from(rows).forEach((row) => {
     const startTime = row.querySelector(".time-start").value;
     const endTime = row.querySelector(".time-end").value;
+    const startTime1 = row.querySelector(".time-start-1").value;
+    const endTime1 = row.querySelector(".time-end-1").value;
     const hoursNormal = row.querySelector(".hours-normal");
+    const overTimeCell = row.querySelector(".overtime");
 
     let totalHours = 0;
-
+    //morning time
     if (startTime && endTime) {
       const start = new Date(`01/01/2000 ${startTime}`);
       const end = new Date(`01/01/2000 ${endTime}`);
       const diff = (end - start) / (1000 * 60 * 60);
       totalHours += diff;
       console.log("total: ", totalHours);
-      console.log("diff", diff);
+      console.log("diff: ", diff);
     }
-
     if (totalHours > 0) {
       hoursNormal.value = totalHours.toFixed(2);
     } else {
       hoursNormal.value = "";
+    }
+
+    //time afternoone
+    if (startTime1 && endTime1) {
+      const start1 = new Date(`01/01/2000 ${startTime1}`);
+      const end1 = new Date(`01/01/2000 ${endTime1}`);
+      const diff1 = (end1 - start1) / (1000 * 60 * 60);
+      totalHours += diff1;
+      console.log("total: ", totalHours);
+      console.log("diff1: ", diff1);
+    }
+    if (totalHours > 0) {
+      hoursNormal.value = totalHours.toFixed(2);
+    } else {
+      hoursNormal.value = "";
+    }
+    const normalWorkingHours = 8 + 24 / 60;
+    let overTime;
+    if (totalHours > normalWorkingHours) {
+      overTime = totalHours - normalWorkingHours;
+    } else {
+      overTime = 0;
+    }
+    // hoursNormal
+    if (totalHours < 0) {
+      hoursNormal.value = totalHours.toFixed(2);
+    } else {
+      hoursNormal.value = "";
+    }
+    // overTimeCell
+    if (overTime > 0) {
+      overTimeCell.value = overTime.toFixed(2);
+    } else {
+      overTimeCell.value = "";
     }
   });
 }
