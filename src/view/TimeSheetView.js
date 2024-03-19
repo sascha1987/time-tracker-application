@@ -59,6 +59,8 @@ export function init() {
       ) {
         calculateWorkingHours();
       }
+      document.getElementById("loginButton").addEventListener("click", login);
+      login();
     });
 
     const date = new Date();
@@ -130,4 +132,11 @@ function calculateWorkingHours() {
       overTimeCell.value = "";
     }
   });
+}
+
+function login() {
+  let username = document.getElementById("username").value;
+  console.log(username);
+  let password = document.getElementById("password").value;
+  console.log(password);
 }

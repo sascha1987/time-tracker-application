@@ -73,3 +73,32 @@ tr:nth-child(even) {
         align-items: center;
     }
 }
+
+#loginForm {
+    width: 100%;
+    max-width: 300px;
+    padding: 40px;
+    margin: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: var(--header-footer-bg-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;    
+}
+
+#loginForm button {
+    width: 70%;
+    padding: 10px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;  
+}
+
+#loginForm button:hover {
+    background-color: #0056b3;
+  }
