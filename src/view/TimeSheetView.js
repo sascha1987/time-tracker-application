@@ -118,7 +118,7 @@ function calculateWorkingHours() {
       overTime = 0;
     }
     // hoursNormal
-    if (totalHours < 0) {
+    if (totalHours > 0) {
       hoursNormal.value = totalHours.toFixed(2);
     } else {
       hoursNormal.value = "";
