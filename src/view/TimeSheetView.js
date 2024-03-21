@@ -59,8 +59,6 @@ export function init() {
       ) {
         calculateWorkingHours();
       }
-      document.getElementById("loginButton").addEventListener("click", login);
-      login();
     });
 
     const date = new Date();
@@ -139,4 +137,31 @@ function login() {
   console.log(username);
   let password = document.getElementById("password").value;
   console.log(password);
+
+  fetch("http://localhost:5500/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, password }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("data: ", data);
+      if (data.success) {
+        // Login successful
+        console.log("data", data);
+        document.getElementById("loginForm").style.display = "none";
+        showContent();
+        // TODO: Läuft noch nicht... Aufruf der init-Funktion erst nach erfolgreichem Login
+        init();
+      } else {
+        console.log("else block");
+        alert("Login fehlgeschlagen");
+      }
+    })
+    .catch((error) => {
+      console.error("Fehler beim Login:", error);
+    });
 }
+document.getElementById("loginButton").addEventListener("click", login);

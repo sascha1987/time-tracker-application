@@ -22,3 +22,6 @@ VALUES (1,'fsa','123456');
 select `*` from users;
 
 --> You should see the entries;
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'XXPASSWORDXX';
+FLUSH PRIVILEGES;

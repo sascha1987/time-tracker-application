@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "description": "## Diplomarbeit 2024 S. Fluor",
   "babel": {
-      "presets": ["@babel/preset-env"]
+    "presets": [
+      "@babel/preset-env"
+    ]
   },
   "type": "module",
-  "main": "script.js",
+  "main": "server.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "start": "node TimeSheetView.test.js",
+    "start": "node src/server.js",
+    "dev": "nodemon server.js",
     "test": "mocha \"test/**/*.js\""
   },
   "repository": {
@@ -29,9 +32,14 @@
     "@babel/preset-env": "^7.x.x",
     "chai": "^5.1.0",
     "jsdom": "^24.0.0",
-    "mocha": "^10.3.0"
+    "mocha": "^10.3.0",
+    "nodemon": "^3.1.0"
   },
   "dependencies": {
-    "babel-register": "^6.26.0"
+    "babel-register": "^6.26.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.3",
+    "mysql": "^2.18.1"
   }
 }
