@@ -132,6 +132,24 @@ function calculateWorkingHours() {
   });
 }
 
+function hideContent() {
+  document.querySelector("header").style.display = "none";
+  document.querySelector("section").style.display = "none";
+  document.querySelector("table").style.display = "none";
+  document.querySelector("footer").style.display = "none";
+}
+
+function showContent() {
+  document.querySelector("header").style.display = "block";
+  document.querySelector("section").style.display = "block";
+  document.querySelector("table").style.display = "table";
+  document.querySelector("footer").style.display = "block";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  hideContent();
+});
+
 function login() {
   let username = document.getElementById("username").value;
   console.log(username);
