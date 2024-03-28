@@ -18,6 +18,7 @@ insert into users (id, username, password)
 VALUES (1,'fsa','123456');
 
 --> take wathever you wand for the entries
+--> password needs to be hashed, use "HelperHashPassword.js"
 
 select `*` from users;
 

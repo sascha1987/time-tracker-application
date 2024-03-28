@@ -39,6 +39,35 @@ export function updateDOMWithDays(year, month) {
   });
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+  checkAuthenticationStatus();
+});
+
+function checkAuthenticationStatus() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    hideContent();
+    return;
+  }
+
+  fetch("http://localhost:5500/verify-token", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        showContent();
+      } else {
+        localStorage.removeItem("token");
+        hideContent();
+      }
+    })
+    .catch((error) => console.error("Fehler bei der Token-Überprüfung:", error));
+  hideContent();
+}
+
 function updateDays() {
   const month = parseInt(document.getElementById("monthInput").value, 10) - 1;
   const year = parseInt(document.getElementById("yearInput").value, 10);
@@ -133,6 +162,7 @@ function calculateWorkingHours() {
 }
 
 function hideContent() {
+  document.getElementById("loginForm").style.display = "block";
   document.querySelector("header").style.display = "none";
   document.querySelector("section").style.display = "none";
   document.querySelector("table").style.display = "none";
@@ -140,6 +170,7 @@ function hideContent() {
 }
 
 function showContent() {
+  document.getElementById("loginForm").style.display = "none";
   document.querySelector("header").style.display = "block";
   document.querySelector("section").style.display = "block";
   document.querySelector("table").style.display = "table";
@@ -168,10 +199,11 @@ function login() {
       console.log("data: ", data);
       if (data.success) {
         // Login successful
+        localStorage.setItem("token", data.token);
         console.log("data", data);
         document.getElementById("loginForm").style.display = "none";
         showContent();
-        // TODO: Läuft noch nicht... Aufruf der init-Funktion erst nach erfolgreichem Login
+        fetchProtectedData();
         init();
       } else {
         console.log("else block");
@@ -182,4 +214,19 @@ function login() {
       console.error("Fehler beim Login:", error);
     });
 }
+function fetchProtectedData() {
+  console.log("Function fetchProtectedData called");
+  const token = localStorage.getItem("token");
+  console.log("Function fetchProtectedData token: ", token);
+  fetch("http://localhost:5500/protected", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => console.log(data))
+    .catch((error) => console.error("Fehler:", error));
+}
+
 document.getElementById("loginButton").addEventListener("click", login);

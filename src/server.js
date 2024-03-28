@@ -2,9 +2,11 @@ import express from "express";
 import mysql from "mysql";
 import bcrypt from "bcrypt";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 
 const app = express();
 const port = 5500;
+const JWT_SECRET = "TestSecretKey";
 
 app.use(cors());
 app.use(express.json());
@@ -40,7 +42,9 @@ app.post("/login", async (req, res) => {
         const match = await bcrypt.compare(password, results[0].password);
         console.log("Password comparison result: ", match);
         if (match) {
-          res.send({ success: true });
+          const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: "24h" });
+          res.send({ success: true, token });
+          console.log("token", token);
         } else {
           console.log("result_false: ", match);
           res.send({ success: false, message: "Incorrect password" });
@@ -57,6 +61,37 @@ app.post("/login", async (req, res) => {
     }
   });
 });
+
+/////////TEST/////////
+
+const authenticateJWT = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(" ")[1];
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+      console.log("authHeader", authHeader);
+      req.user = user;
+      next();
+    });
+  } else {
+    res.sendStatus(401);
+  }
+};
+
+// geschützte Route
+app.get("/protected", authenticateJWT, (req, res) => {
+  res.json({ message: "geschützte Info." });
+});
+
+// In server.js
+app.get("/verify-token", authenticateJWT, (req, res) => {
+  res.sendStatus(200); // OK Status
+});
+
+/////////TEST/////////
 
 // Starting the server
 app.listen(port, () => {
