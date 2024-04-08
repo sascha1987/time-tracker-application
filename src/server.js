@@ -22,27 +22,23 @@ const connection = mysql.createConnection({
 // Handling the login route
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-
-  // SQL query to get user information
   const sql = "SELECT password FROM users WHERE username = ?";
-  //console.log("sql: ", sql);
 
   connection.query(sql, [username], async (err, results) => {
     if (err) {
       console.error("Database error: ", err);
       return res.status(500).send({ message: "Server error" });
     }
-    console.log("Database result: ", results); // Passwort müsste stimmen!
-    console.log("Database result username: ", username); // Username stimmt ebenfalls gem. Datenbank
+    console.log("Database result: ", results);
+    console.log("Database result username: ", username);
 
     if (results.length > 0) {
       console.log("Hashed password from database: ", results[0].password);
-      // Checking the password
       try {
         const match = await bcrypt.compare(password, results[0].password);
         console.log("Password comparison result: ", match);
         if (match) {
-          const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: "24h" });
+          const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: "1h" });
           res.send({ success: true, token });
           console.log("token", token);
         } else {
@@ -62,8 +58,6 @@ app.post("/login", async (req, res) => {
   });
 });
 
-/////////TEST/////////
-
 const authenticateJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
@@ -81,17 +75,13 @@ const authenticateJWT = (req, res, next) => {
   }
 };
 
-// geschützte Route
 app.get("/protected", authenticateJWT, (req, res) => {
   res.json({ message: "geschützte Info." });
 });
 
-// In server.js
 app.get("/verify-token", authenticateJWT, (req, res) => {
-  res.sendStatus(200); // OK Status
+  res.sendStatus(200);
 });
-
-/////////TEST/////////
 
 // Starting the server
 app.listen(port, () => {

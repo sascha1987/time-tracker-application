@@ -10,7 +10,6 @@ export function calculateDaysForMonth(year, month) {
   }
   return daysArray;
 }
-
 export function updateDOMWithDays(year, month) {
   const tableBody = document.getElementById("timeSheet").querySelector("tbody");
   tableBody.innerHTML = "";
@@ -39,67 +38,39 @@ export function updateDOMWithDays(year, month) {
   });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  checkAuthenticationStatus();
-});
-
 function checkAuthenticationStatus() {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    hideContent();
-    return;
-  }
+  if (typeof localStorage !== "undefined") {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      hideContent();
+      return;
+    }
 
-  fetch("http://localhost:5500/verify-token", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((response) => {
-      if (response.ok) {
-        showContent();
-      } else {
-        localStorage.removeItem("token");
-        hideContent();
-      }
+    fetch("http://localhost:5500/verify-token", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
-    .catch((error) => console.error("Fehler bei der Token-Überprüfung:", error));
-  hideContent();
+      .then((response) => {
+        if (response.ok) {
+          showContent();
+        } else {
+          localStorage.removeItem("token");
+          hideContent();
+        }
+      })
+      .catch((error) => {
+        console.error("Fehler bei der Token-Überprüfung:", error);
+        hideContent();
+      });
+  }
 }
 
 function updateDays() {
   const month = parseInt(document.getElementById("monthInput").value, 10) - 1;
   const year = parseInt(document.getElementById("yearInput").value, 10);
   updateDOMWithDays(year, month);
-}
-
-export function init() {
-  if (typeof document !== "undefined") {
-    document.getElementById("monthInput").addEventListener("change", updateDays);
-    document.getElementById("yearInput").addEventListener("change", updateDays);
-
-    document.getElementById("timeSheet").addEventListener("change", (event) => {
-      if (
-        event.target.classList.contains("time-start") ||
-        event.target.classList.contains("time-end") ||
-        event.target.classList.contains("time-start-1") ||
-        event.target.classList.contains("time-end-1")
-      ) {
-        calculateWorkingHours();
-      }
-    });
-
-    const date = new Date();
-    document.getElementById("monthInput").value = date.getMonth() + 1;
-    document.getElementById("yearInput").value = date.getFullYear();
-    updateDays();
-  }
-
-  const date = new Date();
-  document.getElementById("monthInput").value = date.getMonth() + 1;
-  document.getElementById("yearInput").value = date.getFullYear();
-  updateDays();
 }
 
 function calculateWorkingHours() {
@@ -177,10 +148,6 @@ function showContent() {
   document.querySelector("footer").style.display = "block";
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  hideContent();
-});
-
 function login() {
   let username = document.getElementById("username").value;
   console.log(username);
@@ -198,7 +165,6 @@ function login() {
     .then((data) => {
       console.log("data: ", data);
       if (data.success) {
-        // Login successful
         localStorage.setItem("token", data.token);
         console.log("data", data);
         document.getElementById("loginForm").style.display = "none";
@@ -214,6 +180,7 @@ function login() {
       console.error("Fehler beim Login:", error);
     });
 }
+
 function fetchProtectedData() {
   console.log("Function fetchProtectedData called");
   const token = localStorage.getItem("token");
@@ -229,4 +196,37 @@ function fetchProtectedData() {
     .catch((error) => console.error("Fehler:", error));
 }
 
-document.getElementById("loginButton").addEventListener("click", login);
+export function init() {
+  if (typeof document !== "undefined") {
+    document.getElementById("monthInput")?.addEventListener("change", () => updateDays());
+    document.getElementById("yearInput")?.addEventListener("change", () => updateDays());
+    document.getElementById("loginButton")?.addEventListener("click", login);
+    document.getElementById("timeSheet")?.addEventListener("change", handleTimeSheetChanges);
+
+    checkAuthenticationStatus();
+
+    const date = new Date();
+    document.getElementById("monthInput").value = date.getMonth() + 1;
+    document.getElementById("yearInput").value = date.getFullYear();
+    updateDays();
+  }
+}
+
+function handleTimeSheetChanges(event) {
+  if (
+    event.target.classList.contains("time-start") ||
+    event.target.classList.contains("time-end") ||
+    event.target.classList.contains("time-start-1") ||
+    event.target.classList.contains("time-end-1")
+  ) {
+    calculateWorkingHours();
+  }
+}
+
+// document.addEventListener("DOMContentLoaded", function () {
+//   hideContent();
+// });
+
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", init);
+}

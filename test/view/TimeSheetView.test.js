@@ -1,16 +1,20 @@
 import { JSDOM } from "jsdom";
 import { expect } from "chai";
-import { describe, it, before, after } from "mocha";
+import { describe, it, beforeEach, afterEach } from "mocha";
 import { calculateDaysForMonth, updateDOMWithDays } from "../../src/view/TimeSheetView.js";
 
 let dom, document;
 
-before(() => {
+beforeEach(() => {
   dom = new JSDOM(`<!DOCTYPE html><html><body>
     <table id="timeSheet"><tbody></tbody></table>
   </body></html>`);
   document = dom.window.document;
   global.document = document;
+});
+
+afterEach(() => {
+  delete global.document;
 });
 
 describe("updateDOMWithDays", function () {
@@ -40,8 +44,4 @@ describe("calculateDaysForMonth", function () {
     expect(result[0].date).to.equal("01.03.2021");
     expect(result[30].date).to.equal("31.03.2021");
   });
-});
-
-after(() => {
-  delete global.document;
 });
