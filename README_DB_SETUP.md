@@ -26,3 +26,19 @@ select `*` from users;
 
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'XXPASSWORDXX';
 FLUSH PRIVILEGES;
+
+--> Create a table for the data in the form
+
+CREATE TABLE timesheet (
+id INT AUTO_INCREMENT PRIMARY KEY,
+userId INT NOT NULL,
+date DATE NOT NULL,
+startTime TIME NOT NULL,
+endTime TIME NOT NULL,
+startTime1 TIME NOT NULL,
+endTime1 TIME NOT NULL,
+hoursNormal DECIMAL(5,2) NOT NULL,
+overtime DECIMAL(5,2) NOT NULL,
+comments VARCHAR(255),
+FOREIGN KEY (userId) REFERENCES users(id)
+);

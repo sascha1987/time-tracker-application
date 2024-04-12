@@ -73,7 +73,7 @@ function updateDays() {
   updateDOMWithDays(year, month);
 }
 
-function calculateWorkingHours() {
+export function calculateWorkingHours() {
   const rows = document.getElementById("timeSheet").querySelectorAll("tbody tr");
 
   Array.from(rows).forEach((row) => {
@@ -209,6 +209,7 @@ export function init() {
     document.getElementById("monthInput").value = date.getMonth() + 1;
     document.getElementById("yearInput").value = date.getFullYear();
     updateDays();
+    document.getElementById("saveButton")?.addEventListener("click", saveTimeSheetData);
   }
 }
 
@@ -223,9 +224,38 @@ function handleTimeSheetChanges(event) {
   }
 }
 
-// document.addEventListener("DOMContentLoaded", function () {
-//   hideContent();
-// });
+function saveTimeSheetData() {
+  const rows = document.getElementById("timeSheet");
+  const timeSheetData = Array.from(rows).map((row) => ({
+    date: row.querySelector(".date").innerText,
+    startTime: row.querySelector(".time-start").value,
+    endTime: row.querySelector(".time-end").value,
+    startTime1: row.querySelector(".time-start-1").value,
+    endTime1: row.querySelector(".time-end-1").value,
+    hoursNormal: row.querySelector(".hours-normal").value,
+    overtime: row.querySelector(".overtime").value,
+    comments: row.querySelector(".comments").value,
+  }));
+  console.log("rows", rows);
+  console.log("timeSheetData", timeSheetData);
+
+  fetch("http://localhost:5500/save-timesheet", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({ timeSheetData }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      alert("Data stored");
+    })
+    .catch((error) => {
+      console.error("Error while saving data: ", error);
+      alert("Error while saving data");
+    });
+}
 
 if (typeof document !== "undefined") {
   document.addEventListener("DOMContentLoaded", init);

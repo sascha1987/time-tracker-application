@@ -75,6 +75,29 @@ const authenticateJWT = (req, res, next) => {
   }
 };
 
+app.post("/save-timesheet", authenticateJWT, (req, res) => {
+  const { timeSheetData } = req.body;
+  console.log("app.post(/save-timesheet");
+
+  timeSheetData.forEach((data) => {
+    const { date, startTime, endTime, startTime1, endTime1, hoursNormal, overtime, comments } =
+      data;
+    const sql =
+      "INSERT INTO timesheet (date, startTime, endTime, startTime1, endTime1, hoursNormal, overtime, comments) VALUES ?";
+    const values = [
+      [date, startTime, endTime, startTime1, endTime1, hoursNormal, overtime, comments],
+    ];
+
+    connection.query(sql, [values], function (err, result) {
+      if (err) {
+        console.log("Error while inserting to the databse", err);
+        return res.status(500).send({ message: "Errer while storing data" });
+      }
+    });
+  });
+  res.send({ message: "Data saved successfully" });
+});
+
 app.get("/protected", authenticateJWT, (req, res) => {
   res.json({ message: "geschützte Info." });
 });
