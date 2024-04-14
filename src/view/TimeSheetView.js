@@ -182,7 +182,7 @@ function login() {
 }
 
 function fetchProtectedData() {
-  console.log("Function fetchProtectedData called");
+  //  console.log("Function fetchProtectedData called");
   const token = localStorage.getItem("token");
   console.log("Function fetchProtectedData token: ", token);
   fetch("http://localhost:5500/protected", {
@@ -225,7 +225,7 @@ function handleTimeSheetChanges(event) {
 }
 
 function saveTimeSheetData() {
-  const rows = document.getElementById("timeSheet");
+  const rows = document.getElementById("timeSheet").querySelectorAll("tbody tr");
   const timeSheetData = Array.from(rows).map((row) => ({
     date: row.querySelector(".date").innerText,
     startTime: row.querySelector(".time-start").value,
