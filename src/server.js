@@ -121,6 +121,19 @@ app.post("/save-timesheet", authenticateJWT, (req, res) => {
   });
 });
 
+app.get("/get-timesheet", authenticateJWT, (req, res) => {
+  const userId = req.userId;
+  const sql = "SELECT * FROM timesheet where userId = ?";
+  connection.query(sql, [userId], function (err, result) {
+    if (err) {
+      console.error("Error while retrieving data:", err);
+      return res.status(500).send({ message: "Fehler beim Abrufen der DAten" });
+    }
+    res.json(result);
+    //    console.log("result: ", result);
+  });
+});
+
 app.get("/protected", authenticateJWT, (req, res) => {
   res.json({ message: "geschützte Info." });
 });

@@ -36,6 +36,7 @@ export function updateDOMWithDays(year, month) {
     cell = row.insertCell();
     cell.innerHTML = '<input type="text" class="comments">';
   });
+  // fetchAndDisplayTimeSheetData();
 }
 
 function checkAuthenticationStatus() {
@@ -71,6 +72,7 @@ function updateDays() {
   const month = parseInt(document.getElementById("monthInput").value, 10) - 1;
   const year = parseInt(document.getElementById("yearInput").value, 10);
   updateDOMWithDays(year, month);
+  fetchAndDisplayTimeSheetData();
 }
 
 export function calculateWorkingHours() {
@@ -210,6 +212,7 @@ export function init() {
     document.getElementById("yearInput").value = date.getFullYear();
     updateDays();
     document.getElementById("saveButton")?.addEventListener("click", saveTimeSheetData);
+    //    fetchAndDisplayTimeSheetData();
   }
 }
 
@@ -254,6 +257,66 @@ function saveTimeSheetData() {
     .catch((error) => {
       console.error("Error while saving data: ", error);
       alert("Error while saving data");
+    });
+}
+
+function fetchAndDisplayTimeSheetData() {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  fetch("http://localhost:5500/get-timesheet", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const tableBody = document.getElementById("timeSheet").querySelector("tbody");
+      data.forEach((item) => {
+        // Converting date from database to GUI format
+        const dbDate = new Date(item.date);
+        const formattedDate = `${dbDate.getDate().toString().padStart(2, "0")}.${(
+          dbDate.getMonth() + 1
+        )
+          .toString()
+          .padStart(2, "0")}.${dbDate.getFullYear()}`;
+
+        let found = false;
+        tableBody.querySelectorAll("tr").forEach((row) => {
+          if (row.querySelector(".date").innerText === formattedDate) {
+            row.querySelector(".time-start").value = item.startTime || "";
+            row.querySelector(".time-end").value = item.endTime || "";
+            row.querySelector(".time-start-1").value = item.startTime1 || "";
+            row.querySelector(".time-end-1").value = item.endTime1 || "";
+            row.querySelector(".hours-normal").value = item.hoursNormal || "";
+            row.querySelector(".overtime").value = item.overtime || "";
+            row.querySelector(".comments").value = item.comments || "";
+            found = true;
+          }
+        });
+
+        // if (!found) {
+        //   // in case date is not found add row
+        //   // @TODO: Maybe Remove this part, was only there because it didn't work, now it works without it.
+        //   const newRow = tableBody.insertRow();
+        //   newRow.innerHTML = `
+        //   <tr>
+        //     <td><div class="date">${formattedDate}</div></td>
+        //     <td><input type="time" class="time-start" value="${item.startTime}"></td>
+        //     <td><input type="time" class="time-end" value="${item.endTime}"></td>
+        //     <td><input type="time" class="time-start-1" value="${item.startTime1}"></td>
+        //     <td><input type="time" class="time-end-1" value="${item.endTime1}"></td>
+        //     <td><input type="text" class="hours-normal" value="${item.hoursNormal}" readonly></td>
+        //     <td><input type="text" class="overtime" value="${item.overtime}" readonly></td>
+        //     <td><input type="text" class="comments" value="${item.comments}"></td>
+        //   </tr>
+        // `;
+        // }
+      });
+    })
+    .catch((error) => {
+      console.error("Error when retrieving data:", error);
     });
 }
 
