@@ -81,41 +81,98 @@ app.post("/save-timesheet", authenticateJWT, (req, res) => {
   const { timeSheetData } = req.body;
   const userId = req.userId;
   let errors = 0;
+  let processed = 0;
 
-  timeSheetData.forEach((data, index, array) => {
+  timeSheetData.forEach((data) => {
     const { date, startTime, endTime, startTime1, endTime1, hoursNormal, overtime, comments } =
       data;
     const formattedDate = date.split(".").reverse().join("-");
-    const formattedHoursNormal = parseFloat(data.hoursNormal).toFixed(2);
-    console.log("formattedHoursNormal: ", formattedHoursNormal);
-    const sql =
-      "INSERT INTO timesheet (userId, date, startTime, endTime, startTime1, endTime1, hoursNormal, overtime, comments) VALUES ?";
-    const values = [
-      [
-        userId,
-        formattedDate,
-        startTime,
-        endTime,
-        startTime1,
-        endTime1,
-        formattedHoursNormal,
-        overtime,
-        comments,
-      ],
-    ];
+    //const formattedHoursNormal = parseFloat(data.hoursNormal).toFixed(2);
+    const sqlSelect = "SELECT id FROM timesheet WHERE date = ? AND userId = ?";
+    //console.log("formattedHoursNormal: ", formattedHoursNormal);
+    //const sql =
+    //  "INSERT INTO timesheet (userId, date, startTime, endTime, startTime1, endTime1, hoursNormal, overtime, comments) VALUES ?";
 
-    connection.query(sql, [values], function (err, result) {
+    // const values = [
+    //   [
+    //     userId,
+    //     formattedDate,
+    //     startTime,
+    //     endTime,
+    //     startTime1,
+    //     endTime1,
+    //     formattedHoursNormal,
+    //     overtime,
+    //     comments,
+    //   ],
+    // ];
+
+    connection.query(sqlSelect, [formattedDate, userId], (err, results) => {
       if (err) {
-        console.error("Error while inserting to the database", err);
+        console.error("Error querying database", err);
         errors++;
-      }
-      // Only send the response when the last iteration is complete
-      if (index === array.length - 1) {
-        if (errors > 0) {
-          res.status(500).send({ message: "Error while storing data" });
-        } else {
-          res.send({ message: "Data saved successfully" });
-        }
+      } else if (results.length > 0) {
+        const sqlUpdate =
+          "UPDATE timesheet SET startTime = ?, endTime = ?, startTime1 = ?, endTime1 = ?, hoursNormal = ?, overtime = ?, comments = ? WHERE date = ? AND userId = ?";
+        connection.query(
+          sqlUpdate,
+          [
+            startTime,
+            endTime,
+            startTime1,
+            endTime1,
+            hoursNormal,
+            overtime,
+            comments,
+            formattedDate,
+            userId,
+          ],
+          (err) => {
+            if (err) {
+              console.error("Error updating database", err);
+              errors++;
+            }
+            processed++;
+            if (processed === timeSheetData.length) {
+              if (errors > 0) {
+                res.status(500).send({ message: "Error while storing data" });
+              } else {
+                res.send({ message: "Data saved successfully" });
+              }
+            }
+          }
+        );
+      } else {
+        const sqlInsert =
+          "INSERT INTO timesheet (userId, date, startTime, endTime, startTime1, endTime1, hoursNormal, overtime, comments) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        connection.query(
+          sqlInsert,
+          [
+            userId,
+            formattedDate,
+            startTime,
+            endTime,
+            startTime1,
+            endTime1,
+            hoursNormal,
+            overtime,
+            comments,
+          ],
+          (err) => {
+            if (err) {
+              console.error("Error inserting into database", err);
+              errors++;
+            }
+            processed++;
+            if (processed === timeSheetData.length) {
+              if (errors > 0) {
+                res.status(500).send({ message: "Error while storing data" });
+              } else {
+                res.send({ message: "Data saved successfully" });
+              }
+            }
+          }
+        );
       }
     });
   });
