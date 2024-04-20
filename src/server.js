@@ -49,9 +49,7 @@ app.post("/login", async (req, res) => {
         }
       } catch (error) {
         console.error("Error during password verification: ", error);
-        return res
-          .status(500)
-          .send({ success: false, message: "Error during password verification" });
+        return res.status(500).send({ success: false, message: "Error during password verification" });
       }
     } else {
       res.send({ success: false, message: "Username not found" });
@@ -84,29 +82,11 @@ app.post("/save-timesheet", authenticateJWT, (req, res) => {
   let processed = 0;
 
   timeSheetData.forEach((data) => {
-    const { date, startTime, endTime, startTime1, endTime1, hoursNormal, overtime, comments } =
-      data;
+    const { date, startTime, endTime, startTime1, endTime1, hoursNormal, overtime, comments } = data;
     const formattedDate = date.split(".").reverse().join("-");
-    //const formattedHoursNormal = parseFloat(data.hoursNormal).toFixed(2);
     const sqlSelect = "SELECT id FROM timesheet WHERE date = ? AND userId = ?";
-    //console.log("formattedHoursNormal: ", formattedHoursNormal);
-    //const sql =
-    //  "INSERT INTO timesheet (userId, date, startTime, endTime, startTime1, endTime1, hoursNormal, overtime, comments) VALUES ?";
-
-    // const values = [
-    //   [
-    //     userId,
-    //     formattedDate,
-    //     startTime,
-    //     endTime,
-    //     startTime1,
-    //     endTime1,
-    //     formattedHoursNormal,
-    //     overtime,
-    //     comments,
-    //   ],
-    // ];
-
+    const cleanHoursNormal = hoursNormal ? parseFloat(hoursNormal).toFixed(2) : "0.00";
+    const cleanOvertime = overtime ? parseFloat(overtime).toFixed(2) : "0.00";
     connection.query(sqlSelect, [formattedDate, userId], (err, results) => {
       if (err) {
         console.error("Error querying database", err);
@@ -116,17 +96,7 @@ app.post("/save-timesheet", authenticateJWT, (req, res) => {
           "UPDATE timesheet SET startTime = ?, endTime = ?, startTime1 = ?, endTime1 = ?, hoursNormal = ?, overtime = ?, comments = ? WHERE date = ? AND userId = ?";
         connection.query(
           sqlUpdate,
-          [
-            startTime,
-            endTime,
-            startTime1,
-            endTime1,
-            hoursNormal,
-            overtime,
-            comments,
-            formattedDate,
-            userId,
-          ],
+          [startTime, endTime, startTime1, endTime1, cleanHoursNormal, cleanOvertime, comments, formattedDate, userId],
           (err) => {
             if (err) {
               console.error("Error updating database", err);
@@ -147,17 +117,7 @@ app.post("/save-timesheet", authenticateJWT, (req, res) => {
           "INSERT INTO timesheet (userId, date, startTime, endTime, startTime1, endTime1, hoursNormal, overtime, comments) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         connection.query(
           sqlInsert,
-          [
-            userId,
-            formattedDate,
-            startTime,
-            endTime,
-            startTime1,
-            endTime1,
-            hoursNormal,
-            overtime,
-            comments,
-          ],
+          [userId, formattedDate, startTime, endTime, startTime1, endTime1, cleanHoursNormal, cleanOvertime, comments],
           (err) => {
             if (err) {
               console.error("Error inserting into database", err);
@@ -187,7 +147,6 @@ app.get("/get-timesheet", authenticateJWT, (req, res) => {
       return res.status(500).send({ message: "Fehler beim Abrufen der DAten" });
     }
     res.json(result);
-    //    console.log("result: ", result);
   });
 });
 
@@ -199,7 +158,6 @@ app.get("/verify-token", authenticateJWT, (req, res) => {
   res.sendStatus(200);
 });
 
-// Starting the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
