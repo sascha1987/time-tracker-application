@@ -64,7 +64,7 @@
     "setupFilesAfterEnv": [
       "./jest.setup.js"
     ],
-    "coverageReporters": ["json", "lcov", "text", "clover"],
+    "coverageReporters": ["json", "lcov", "text", "clover", "text-summary"],
     "coverageDirectory": "./coverage"
   }
 }
