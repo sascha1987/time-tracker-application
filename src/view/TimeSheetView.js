@@ -3,14 +3,11 @@ export function calculateDaysForMonth(year, month) {
   const daysArray = [];
 
   for (let day = 1; day <= daysInMonth; day++) {
-    const formattedDate = `${day.toString().padStart(2, "0")}.${(month + 1)
-      .toString()
-      .padStart(2, "0")}.${year}`;
+    const formattedDate = `${day.toString().padStart(2, "0")}.${(month + 1).toString().padStart(2, "0")}.${year}`;
     daysArray.push({ date: formattedDate });
   }
   return daysArray;
 }
-
 export function updateDOMWithDays(year, month) {
   const tableBody = document.getElementById("timeSheet").querySelector("tbody");
   tableBody.innerHTML = "";
@@ -39,41 +36,42 @@ export function updateDOMWithDays(year, month) {
   });
 }
 
+function checkAuthenticationStatus() {
+  if (typeof localStorage !== "undefined") {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      hideContent();
+      return;
+    }
+    fetch("http://localhost:5500/verify-token", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          showContent();
+        } else {
+          localStorage.removeItem("token");
+          hideContent();
+        }
+      })
+      .catch((error) => {
+        console.error("Fehler bei der Token-Überprüfung:", error);
+        hideContent();
+      });
+  }
+}
+
 function updateDays() {
   const month = parseInt(document.getElementById("monthInput").value, 10) - 1;
   const year = parseInt(document.getElementById("yearInput").value, 10);
   updateDOMWithDays(year, month);
+  fetchAndDisplayTimeSheetData();
 }
 
-export function init() {
-  if (typeof document !== "undefined") {
-    document.getElementById("monthInput").addEventListener("change", updateDays);
-    document.getElementById("yearInput").addEventListener("change", updateDays);
-
-    document.getElementById("timeSheet").addEventListener("change", (event) => {
-      if (
-        event.target.classList.contains("time-start") ||
-        event.target.classList.contains("time-end") ||
-        event.target.classList.contains("time-start-1") ||
-        event.target.classList.contains("time-end-1")
-      ) {
-        calculateWorkingHours();
-      }
-    });
-
-    const date = new Date();
-    document.getElementById("monthInput").value = date.getMonth() + 1;
-    document.getElementById("yearInput").value = date.getFullYear();
-    updateDays();
-  }
-
-  const date = new Date();
-  document.getElementById("monthInput").value = date.getMonth() + 1;
-  document.getElementById("yearInput").value = date.getFullYear();
-  updateDays();
-}
-
-function calculateWorkingHours() {
+export function calculateWorkingHours() {
   const rows = document.getElementById("timeSheet").querySelectorAll("tbody tr");
 
   Array.from(rows).forEach((row) => {
@@ -130,4 +128,172 @@ function calculateWorkingHours() {
       overTimeCell.value = "";
     }
   });
+}
+
+function hideContent() {
+  document.getElementById("loginForm").style.display = "block";
+  document.querySelector("header").style.display = "none";
+  document.querySelector("section").style.display = "none";
+  document.querySelector("table").style.display = "none";
+  document.querySelector("footer").style.display = "none";
+}
+
+function showContent() {
+  document.getElementById("loginForm").style.display = "none";
+  document.querySelector("header").style.display = "block";
+  document.querySelector("section").style.display = "block";
+  document.querySelector("table").style.display = "table";
+  document.querySelector("footer").style.display = "block";
+}
+
+function login() {
+  let username = document.getElementById("username").value;
+  console.log(username);
+  let password = document.getElementById("password").value;
+  console.log(password);
+
+  fetch("http://localhost:5500/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, password }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("data: ", data);
+      if (data.success) {
+        localStorage.setItem("token", data.token);
+        console.log("data", data);
+        document.getElementById("loginForm").style.display = "none";
+        showContent();
+        fetchProtectedData();
+        init();
+      } else {
+        console.log("else block");
+        alert("Login fehlgeschlagen");
+      }
+    })
+    .catch((error) => {
+      console.error("Fehler beim Login:", error);
+    });
+}
+
+function fetchProtectedData() {
+  const token = localStorage.getItem("token");
+  console.log("Function fetchProtectedData token: ", token);
+  fetch("http://localhost:5500/protected", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => console.log(data))
+    .catch((error) => console.error("Fehler:", error));
+}
+
+export function init() {
+  if (typeof document !== "undefined") {
+    document.getElementById("monthInput")?.addEventListener("change", () => updateDays());
+    document.getElementById("yearInput")?.addEventListener("change", () => updateDays());
+    document.getElementById("loginButton")?.addEventListener("click", login);
+    document.getElementById("timeSheet")?.addEventListener("change", handleTimeSheetChanges);
+
+    checkAuthenticationStatus();
+
+    const date = new Date();
+    document.getElementById("monthInput").value = date.getMonth() + 1;
+    document.getElementById("yearInput").value = date.getFullYear();
+    updateDays();
+    document.getElementById("saveButton")?.addEventListener("click", saveTimeSheetData);
+  }
+}
+
+function handleTimeSheetChanges(event) {
+  if (
+    event.target.classList.contains("time-start") ||
+    event.target.classList.contains("time-end") ||
+    event.target.classList.contains("time-start-1") ||
+    event.target.classList.contains("time-end-1")
+  ) {
+    calculateWorkingHours();
+  }
+}
+
+function saveTimeSheetData() {
+  const rows = document.getElementById("timeSheet").querySelectorAll("tbody tr");
+  const timeSheetData = Array.from(rows).map((row) => ({
+    date: row.querySelector(".date").innerText,
+    startTime: row.querySelector(".time-start").value,
+    endTime: row.querySelector(".time-end").value,
+    startTime1: row.querySelector(".time-start-1").value,
+    endTime1: row.querySelector(".time-end-1").value,
+    hoursNormal: row.querySelector(".hours-normal").value,
+    overtime: row.querySelector(".overtime").value,
+    comments: row.querySelector(".comments").value,
+  }));
+  console.log("rows", rows);
+  console.log("timeSheetData", timeSheetData);
+
+  fetch("http://localhost:5500/save-timesheet", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({ timeSheetData }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      alert("Data stored");
+    })
+    .catch((error) => {
+      console.error("Error while saving data: ", error);
+      alert("Error while saving data");
+    });
+}
+
+function fetchAndDisplayTimeSheetData() {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  fetch("http://localhost:5500/get-timesheet", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const tableBody = document.getElementById("timeSheet").querySelector("tbody");
+      data.forEach((item) => {
+        // Converting date from database to GUI format
+        const dbDate = new Date(item.date);
+        const formattedDate = `${dbDate.getDate().toString().padStart(2, "0")}.${(dbDate.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}.${dbDate.getFullYear()}`;
+
+        let found = false;
+        tableBody.querySelectorAll("tr").forEach((row) => {
+          if (row.querySelector(".date").innerText === formattedDate) {
+            row.querySelector(".time-start").value = item.startTime === "00:00:00" ? "" : item.startTime;
+            row.querySelector(".time-end").value = item.endTime === "00:00:00" ? "" : item.endTime;
+            row.querySelector(".time-start-1").value = item.startTime1 === "00:00:00" ? "" : item.startTime1;
+            row.querySelector(".time-end-1").value = item.endTime1 === "00:00:00" ? "" : item.endTime1;
+            row.querySelector(".hours-normal").value = item.hoursNormal || "";
+            row.querySelector(".overtime").value = item.overtime || "";
+            row.querySelector(".comments").value = item.comments || "";
+            found = true;
+          }
+        });
+      });
+    })
+    .catch((error) => {
+      console.error("Error when retrieving data:", error);
+    });
+}
+
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", init);
 }
