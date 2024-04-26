@@ -43,7 +43,6 @@ function checkAuthenticationStatus() {
       hideContent();
       return;
     }
-
     fetch("http://localhost:5500/verify-token", {
       method: "GET",
       headers: {
