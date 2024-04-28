@@ -52,6 +52,7 @@ function checkAuthenticationStatus() {
       .then((response) => {
         if (response.ok) {
           showContent();
+          updateEmployeeName();
         } else {
           localStorage.removeItem("token");
           hideContent();
@@ -136,6 +137,7 @@ function hideContent() {
   document.querySelector("section").style.display = "none";
   document.querySelector("table").style.display = "none";
   document.querySelector("footer").style.display = "none";
+  document.querySelector("#animation-bg").style.display = "block";
 }
 
 function showContent() {
@@ -144,6 +146,7 @@ function showContent() {
   document.querySelector("section").style.display = "block";
   document.querySelector("table").style.display = "table";
   document.querySelector("footer").style.display = "block";
+  document.querySelector("#animation-bg").style.display = "none";
 }
 
 function login() {
@@ -161,12 +164,13 @@ function login() {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log("data: ", data);
       if (data.success) {
         localStorage.setItem("token", data.token);
-        console.log("data", data);
+        localStorage.setItem("username", data.username);
         document.getElementById("loginForm").style.display = "none";
+        updateEmployeeName();
         showContent();
+        console.log("Username: ", username);
         fetchProtectedData();
         init();
       } else {
@@ -177,6 +181,22 @@ function login() {
     .catch((error) => {
       console.error("Fehler beim Login:", error);
     });
+}
+
+function updateEmployeeName() {
+  const username = localStorage.getItem("username");
+  console.log("Loaded usernamen from storage: ", username);
+  const employeeName = document.getElementById("employeeName");
+  if (employeeName && username) {
+    employeeName.textContent = username;
+  } else {
+    console.error("Element or username not found");
+  }
+}
+
+function logOut() {
+  localStorage.removeItem("token");
+  window.location.reload();
 }
 
 function fetchProtectedData() {
@@ -199,7 +219,7 @@ export function init() {
     document.getElementById("yearInput")?.addEventListener("change", () => updateDays());
     document.getElementById("loginButton")?.addEventListener("click", login);
     document.getElementById("timeSheet")?.addEventListener("change", handleTimeSheetChanges);
-
+    document.getElementById("logoutButton")?.addEventListener("click", logOut);
     checkAuthenticationStatus();
 
     const date = new Date();
