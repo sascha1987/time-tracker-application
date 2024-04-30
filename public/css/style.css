@@ -1,10 +1,10 @@
 :root {
     --background-color: #f4f4f4;
-    --primary-color: #00376e;;
+    --primary-color: #00376e;
     --secondary-color: #f2f2f2;
     --text-color: #333;
     --border-color: #ddd;
-    --header-footer-bg-color: lightblue;
+    --header-footer-bg-color: rgba(173, 216, 230, 0.5);
 }
 
 body {
@@ -13,17 +13,40 @@ body {
     padding: 20px;
 }
 
-#saveButton {
+.bg-img {
+    background-image: url('../images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    z-index: -1;
+  }
+
+h2 {
+    width: 100%;
+    text-align:center;
+}
+
+#saveButton, #logoutButton {
     padding: 5px 10px;
     margin-top: 10px;
-    background-color: #00376e;;
+    background-color: #00376e;
     color: white;
     border: none;
     border-radius: 5px;
+    margin-right: 0px;
 }
 
 #saveButton:hover {
     background-color: #6f5c0a;
+}
+
+#logoutButton:hover {
+    background-color: #f70606;
 }
 
 header, .time-tracking, table, footer {
@@ -36,12 +59,37 @@ header, .time-tracking, table, footer {
 
 header h1 {
     text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .time-tracking {
-    display: flex;
-    justify-content: space-between;
+    background-color: var(--header-footer-bg-color);
+    border-radius: 8px;
+    padding: 20px; 
+    margin-bottom: 20px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+.time-tracking label {
+    margin-bottom: 5px;
+    color: #333; 
+    font-size: 1rem; 
+  }
+  
+  .time-tracking #employeeName {
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+
+  .date-selection {
+    vertical-align: top;
+  }
+  
+  select, input[type="text"], input[type="time"] {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid black;
+  }  
 
 table {
     width: 100%;
@@ -55,7 +103,7 @@ table, th, td {
 th {
     background-color: var(--primary-color);
     color: white;
-    text-align: left;
+    text-align: center;
     padding: 12px;
 }
 
@@ -75,30 +123,61 @@ tr:nth-child(even) {
 }
 
 #loginForm {
-    width: 100%;
-    max-width: 300px;
-    padding: 40px;
-    margin: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     background: var(--header-footer-bg-color);
-    display: flex;
-    flex-direction: column;
-    align-items: center;    
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+}
+
+#username, #password, #loginButton {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 #loginForm button {
-    width: 70%;
-    padding: 10px;
-    margin-top: 20px;
+    width: 85%; 
+    padding: 10px; 
+    background-color: #007BFF; 
+    color: white;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
-    color: white;
+    align-items: center;
     cursor: pointer;
-    font-size: 16px;  
+    transition: background-color 0.3s;
+    font-weight: bold;   
 }
 
 #loginForm button:hover {
     background-color: #0056b3;
   }
+
+  @media (max-width: 600px) {
+    #loginForm {
+        padding: 10px;
+        max-width: 90%;
+    }
+}
+
+#animation-bg{
+    top: 0;
+    left: 0;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+}

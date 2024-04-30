@@ -22,7 +22,7 @@ const connection = mysql.createConnection({
 // Handling the login route
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  const sql = "SELECT id, password FROM users WHERE username = ?";
+  const sql = "SELECT id, username, password FROM users WHERE username = ?";
 
   connection.query(sql, [username], async (err, results) => {
     if (err) {
@@ -40,8 +40,11 @@ app.post("/login", async (req, res) => {
         if (match) {
           const userId = results[0].id;
           const token = jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: "1h" });
-          res.send({ success: true, token });
-          console.log("token", token);
+          res.send({ success: true, token, username: results[0].username });
+          console.log("token", token); //TODO LÖSCHEN
+          console.log("username", username); //TODO LÖSCHEN
+          console.log("Username from database: ", results[0].username); //TODO LÖSCHEN
+          console.log("Database results:", results[0]);
         } else {
           console.log("result_false: ", match);
           res.send({ success: false, message: "Incorrect password" });
