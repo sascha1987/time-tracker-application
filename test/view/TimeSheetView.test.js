@@ -63,6 +63,11 @@ describe("calculateWorkingHours", () => {
         </tr>
       </tbody>
       </table>
+      <footer>
+      <div class="footer-total">
+        Total Hours: <span id="totalHours">0</span>
+      </div>
+    </footer>
     `;
   });
 
