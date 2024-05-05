@@ -5,20 +5,9 @@
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0">
         <title>TimeTrackingApp</title>
         <link rel="stylesheet" href="./css/style.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
     </head>
     <body>
-        <div id="animation-bg"></div>
-            <!-- Login -->
-            <div id="loginForm">
-                <h2>Login Time Tracking</h2>
-                <input type="text" id="username" placeholder="username">
-                <input type="password" id="password" placeholder="password">
-                <button type= "submit" id="loginButton">Login</button>
-            </div>
-            <!-- Login -->
-
+        
         <header>
             <div class="header-content">
                 <h1>Time Recording</h1>
@@ -42,7 +31,6 @@
             </div>
             <div>
                 <button id="saveButton">save</button>
-                <button id="logoutButton">log out</button>
             </div>
         </header>
     
@@ -52,7 +40,9 @@
             </div>
             <div class="employee">
                 <label>Employee:</label>
-                <span id="employeeName"></span>
+                <input type="text" placeholder="First Name">
+                <input type="text" placeholder="Last Name">
+                <input type="text" placeholder="Personnel Number">
             </div>
         </section>
     
@@ -75,34 +65,13 @@
         </table>
     
         <footer>
-            <div class="footer-total">
-                <span>Total Hours: </span><span id="totalHours">0</span>
-            </div>
+
         </footer>
     
+        <!--<script type="module" src="../src/view/TimeSheetView.js"></script>-->
         <script type="module">
             import { init } from '../src/view/TimeSheetView.js';
             document.addEventListener('DOMContentLoaded', init);
-        </script>
-        <script>
-            window.addEventListener('DOMContentLoaded', ()=> {
-                VANTA.BIRDS({
-                   el: "#animation-bg",
-                   mouseControls: true,
-                   touchControls: true,
-                   gyroControls: false,
-                   minHeight: 200.00,
-                   minWidth: 200.00,
-                   scale: 1.00,
-                   scaleMobile: 1.00,
-                   backgroundColor: 0x00376e,
-                   color1: 0xe4e67a,
-                   color2: 0xe4e67a,
-                   wingSpan: 17.00,
-                   colorMode: "lerpGradient",
-                   quantity: 4.00
-                })  
-            })
-        </script>
+          </script>
     </body>
 </html>
