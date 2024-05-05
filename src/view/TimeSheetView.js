@@ -129,6 +129,7 @@ export function calculateWorkingHours() {
       overTimeCell.value = "";
     }
   });
+  updateTotalHoursMonth();
 }
 
 function hideContent() {
@@ -308,12 +309,27 @@ function fetchAndDisplayTimeSheetData() {
           }
         });
       });
+      updateTotalHoursMonth();
     })
     .catch((error) => {
       console.error("Error when retrieving data:", error);
     });
 }
 
-if (typeof document !== "undefined") {
-  document.addEventListener("DOMContentLoaded", init);
+function updateTotalHoursMonth() {
+  const rows = document.querySelectorAll("#timeSheet tbody tr");
+  let totalHoursForMonth = 0;
+
+  rows.forEach((row) => {
+    const hoursNormalInput = row.querySelector(".hours-normal");
+    const hoursValue = parseFloat(hoursNormalInput.value || 0);
+    totalHoursForMonth += hoursValue;
+  });
+
+  const totalHoursDisplay = document.getElementById("totalHours");
+  totalHoursDisplay.textContent = totalHoursForMonth.toFixed(2);
 }
+
+//if (typeof document !== "undefined") {
+//  document.addEventListener("DOMContentLoaded", init);
+//}
