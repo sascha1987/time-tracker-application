@@ -1,10 +1,11 @@
 import { JSDOM } from "jsdom";
 import { TextEncoder, TextDecoder } from "util";
+import { TimeSheetView } from "../../src/view/TimeSheetView";
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
-import { calculateDaysForMonth, updateDOMWithDays, calculateWorkingHours } from "../../src/view/TimeSheetView.js";
 
-let dom, document;
+let dom, document, view;
+view = new TimeSheetView();
 
 beforeEach(() => {
   dom = new JSDOM(`<!DOCTYPE html><html><body>
@@ -19,32 +20,20 @@ afterEach(() => {
 });
 
 describe("updateDOMWithDays", () => {
-  test("should update the DOM based on the given year and month", () => {
-    const year = 2020;
-    const month = 0;
+  beforeEach(() => {
+    dom = new JSDOM(`<!DOCTYPE html><html><body>
+      <table id="timeSheet"><tbody></tbody></table>
+    </body></html>`);
+    document = dom.window.document;
+    global.document = document;
+  });
+  test("should update the DOM based on the given array of days", () => {
+    const daysArray = [{ date: "01.01.2020" }, { date: "02.01.2020" }];
 
-    updateDOMWithDays.call({ document }, year, month);
+    view.updateDOMWithDays(daysArray);
     const tableBody = document.querySelector("#timeSheet tbody");
 
-    expect(tableBody.rows.length).toBe(31);
-  });
-});
-
-describe("calculateDaysForMonth", () => {
-  test("should return 31 days for January 2020", () => {
-    const result = calculateDaysForMonth(2020, 0);
-    expect(result).toHaveLength(31);
-  });
-
-  test("should return 29 days for February 2020 (leap year)", () => {
-    const result = calculateDaysForMonth(2020, 1);
-    expect(result).toHaveLength(29);
-  });
-
-  test("should format dates correctly for March 2021", () => {
-    const result = calculateDaysForMonth(2021, 2);
-    expect(result[0].date).toBe("01.03.2021");
-    expect(result[30].date).toBe("31.03.2021");
+    expect(tableBody.rows.length).toBe(daysArray.length);
   });
 });
 
@@ -72,7 +61,7 @@ describe("calculateWorkingHours", () => {
   });
 
   test("should calculate total and overtime hours", () => {
-    calculateWorkingHours();
+    view.calculateWorkingHours();
     const hoursNormalInput = document.querySelector(".hours-normal");
     expect(hoursNormalInput.value).toBe("9.00"); // 8 hours normal time + 1 hour overtime
   });
