@@ -2,22 +2,12 @@ import { EmployeeModel } from "../model/EmployeeModel.js";
 export class TimeSheetView {
   constructor(controller) {
     this.controller = controller;
-    //    this.registerEventListeners();
     this.model = new EmployeeModel();
   }
-  // ------->maybe not needed
-  // registerEventListeners() {
-  //   document.getElementById("monthInput").addEventListener("change", () => this.controller.updateDays());
-  //   document.getElementById("loginButton").addEventListener("click", () => this.controller.login());
-  //   document.getElementById("logoutButton").addEventListener("click", () => this.controller.logOut());
-  // }
 
   updateDOMWithDays(daysArray) {
     const tableBody = document.getElementById("timeSheet").querySelector("tbody");
     tableBody.innerHTML = "";
-
-    console.log("updateDOMWithDays daysArray", daysArray);
-
     daysArray.forEach((day) => {
       const row = tableBody.insertRow();
 
@@ -60,7 +50,6 @@ export class TimeSheetView {
 
   updateEmployeeName() {
     const username = localStorage.getItem("username");
-    //   console.log("Loaded usernamen from storage: ", username);
     const employeeName = document.getElementById("employeeName");
     if (employeeName && username) {
       employeeName.textContent = username;

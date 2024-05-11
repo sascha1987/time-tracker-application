@@ -9,11 +9,9 @@ export class TimeSheetController {
   }
 
   updateDays() {
-    console.log("called");
     const month = parseInt(document.getElementById("monthInput").value, 10) - 1;
     const year = parseInt(document.getElementById("yearInput").value, 10);
     const daysArray = this.model.calculateDaysForMonth(year, month);
-    console.log("daysArray in updateDays: ", daysArray);
     this.view.updateDOMWithDays(daysArray);
     this.fetchAndDisplayTimeSheetData();
   }
@@ -55,7 +53,6 @@ export class TimeSheetController {
     if (typeof localStorage !== "undefined") {
       const token = localStorage.getItem("token");
       if (!token) {
-        //        console.log("No token, hiding content");
         this.view.hideContent();
         return;
       }
@@ -67,12 +64,9 @@ export class TimeSheetController {
           },
         });
         if (response.ok) {
-          console.log("Token valid, showing content");
           this.view.showContent();
           this.view.updateEmployeeName();
-          //         this.fetchAndDisplayTimeSheetData();
         } else {
-          console.log("Token invalid, hiding content");
           throw new Error("Token validation failed");
         }
       } catch (error) {
@@ -84,7 +78,6 @@ export class TimeSheetController {
   }
   fetchProtectedData() {
     const token = localStorage.getItem("token");
-    console.log("Function fetchProtectedData token: ", token);
     fetch("http://localhost:5500/protected", {
       method: "GET",
       headers: {
@@ -97,7 +90,6 @@ export class TimeSheetController {
   }
 
   init() {
-    //console.log("init called");
     if (typeof document !== "undefined") {
       document.getElementById("monthInput")?.addEventListener("change", () => this.updateDays());
       document.getElementById("yearInput")?.addEventListener("change", () => this.updateDays());
@@ -125,7 +117,6 @@ export class TimeSheetController {
     }
   }
   saveTimeSheetData() {
-    // console.log("saveTimeSheetData called");
     const rows = document.getElementById("timeSheet").querySelectorAll("tbody tr");
     const timeSheetData = Array.from(rows).map((row) => ({
       date: row.querySelector(".date").innerText,
@@ -137,9 +128,6 @@ export class TimeSheetController {
       overtime: row.querySelector(".overtime").value,
       comments: row.querySelector(".comments").value,
     }));
-    console.log("rows", rows);
-    console.log("timeSheetData", timeSheetData);
-
     fetch("http://localhost:5500/save-timesheet", {
       method: "POST",
       headers: {
@@ -158,7 +146,6 @@ export class TimeSheetController {
       });
   }
   fetchAndDisplayTimeSheetData() {
-    //   console.log("fetchAndDisplayTimeSheetData called");
     const token = localStorage.getItem("token");
     if (!token) return;
 
