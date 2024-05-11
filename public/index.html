@@ -71,7 +71,7 @@
             </thead>
             <tbody>
 
-            </tbody>
+            </tbody>    
         </table>
     
         <footer>
@@ -81,9 +81,13 @@
         </footer>
     
         <script type="module">
-            import { init } from '../src/view/TimeSheetView.js';
-            document.addEventListener('DOMContentLoaded', init);
-        </script>
+            import { TimeSheetController } from '../src/controller/TimeSheetController.js';
+            document.addEventListener('DOMContentLoaded', () => {
+              const controller = new TimeSheetController();
+              controller.init();
+            });
+          </script>
+          
         <script>
             window.addEventListener('DOMContentLoaded', ()=> {
                 VANTA.BIRDS({
