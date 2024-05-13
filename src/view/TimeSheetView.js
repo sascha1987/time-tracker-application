@@ -5,6 +5,34 @@ export class TimeSheetView {
     this.model = new EmployeeModel();
   }
 
+  displayTimeSheetData(data, month, year) {
+    console.log("displayTimeSheetData called from view");
+    const tableBody = document.getElementById("timeSheet").querySelector("tbody");
+    tableBody.innerHTML = "";
+
+    data.forEach((item) => {
+      const dbDate = new Date(item.date);
+      // Only display data for the selected month and year
+      if (dbDate.getMonth() === month && dbDate.getFullYear() === year) {
+        const formattedDate = `${dbDate.getDate().toString().padStart(2, "0")}.${(dbDate.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}.${dbDate.getFullYear()}`;
+        const row = tableBody.insertRow();
+        row.innerHTML = `
+        <td><div class="date">${formattedDate}</div></td>
+        <td><input type="time" class="time-start" value="${item.startTime || ""}"></td>
+        <td><input type="time" class="time-end" value="${item.endTime || ""}"></td>
+        <td><input type="time" class="time-start-1" value="${item.startTime1 || ""}"></td>
+        <td><input type="time" class="time-end-1" value="${item.endTime1 || ""}"></td>
+        <td><input type="text" class="hours-normal" value="${item.hoursNormal || ""}" readonly></td>
+        <td><input type="text" class="overtime" value="${item.overtime || ""}" readonly></td>
+        <td><input type="text" class="comments" value="${item.comments || ""}"></td>
+      `;
+      }
+    });
+    this.updateTotalHoursMonth();
+  }
+
   updateDOMWithDays(daysArray) {
     const tableBody = document.getElementById("timeSheet").querySelector("tbody");
     tableBody.innerHTML = "";
