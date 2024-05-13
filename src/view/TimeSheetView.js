@@ -18,19 +18,22 @@ export class TimeSheetView {
           .toString()
           .padStart(2, "0")}.${dbDate.getFullYear()}`;
         const row = tableBody.insertRow();
+        const formattedHoursNormal = item.hoursNormal ? parseFloat(item.hoursNormal).toFixed(2) : "";
+        const formattedOvertime = item.overtime ? parseFloat(item.overtime).toFixed(2) : "";
         row.innerHTML = `
         <td><div class="date">${formattedDate}</div></td>
         <td><input type="time" class="time-start" value="${item.startTime || ""}"></td>
         <td><input type="time" class="time-end" value="${item.endTime || ""}"></td>
         <td><input type="time" class="time-start-1" value="${item.startTime1 || ""}"></td>
         <td><input type="time" class="time-end-1" value="${item.endTime1 || ""}"></td>
-        <td><input type="text" class="hours-normal" value="${item.hoursNormal || ""}" readonly></td>
-        <td><input type="text" class="overtime" value="${item.overtime || ""}" readonly></td>
+        <td><input type="text" class="hours-normal" value="${formattedHoursNormal || ""}" readonly></td>
+        <td><input type="text" class="overtime" value="${formattedOvertime || ""}" readonly></td>
         <td><input type="text" class="comments" value="${item.comments || ""}"></td>
       `;
       }
     });
     this.updateTotalHoursMonth();
+    this.updateTotalOverTimeMonth();
   }
 
   updateDOMWithDays(daysArray) {
@@ -100,6 +103,22 @@ export class TimeSheetView {
     totalHoursDisplay.textContent = totalHoursForMonth.toFixed(2);
   }
 
+  updateTotalOverTimeMonth() {
+    console.log("OverTimeCalc called");
+    const rows = document.querySelectorAll("#timeSheet tbody tr");
+    let totalOvertimeForMonth = 0;
+
+    rows.forEach((row) => {
+      const overTimeInput = row.querySelector(".overtime");
+      const overTimeValue = parseFloat(overTimeInput.value || 0);
+      totalOvertimeForMonth += overTimeValue;
+    });
+
+    const totalOverTimeDisplay = document.getElementById("totalOvertime");
+    totalOverTimeDisplay.textContent = totalOvertimeForMonth.toFixed(2);
+    console.log("OverTime: ", totalOvertimeForMonth.toFixed(2));
+  }
+
   calculateWorkingHours() {
     const rows = document.getElementById("timeSheet").querySelectorAll("tbody tr");
 
@@ -132,31 +151,30 @@ export class TimeSheetView {
         const diff1 = (end1 - start1) / (1000 * 60 * 60);
         totalHours += diff1;
       }
-      if (totalHours > 0) {
-        hoursNormal.value = totalHours.toFixed(2);
-      } else {
-        hoursNormal.value = "";
-      }
+      // if (totalHours > 0) {
+      //   hoursNormal.value = totalHours.toFixed(2);
+      // } else {
+      //   hoursNormal.value = "";
+      // }
       const normalWorkingHours = 8 + 24 / 60;
-      let overTime;
-      if (totalHours > normalWorkingHours) {
-        overTime = totalHours - normalWorkingHours;
-      } else {
-        overTime = 0;
-      }
+      let overTime = totalHours - normalWorkingHours;
+      // if (totalHours > normalWorkingHours) {
+      //   overTime = totalHours - normalWorkingHours;
+      // } else {
+      //   overTime = 0;
+      // }
       // hoursNormal
       if (totalHours > 0) {
         hoursNormal.value = totalHours.toFixed(2);
-      } else {
-        hoursNormal.value = "";
-      }
-      // overTimeCell
-      if (overTime > 0) {
         overTimeCell.value = overTime.toFixed(2);
       } else {
+        hoursNormal.value = "";
         overTimeCell.value = "";
       }
+      // overTimeCell
+      // overTimeCell.value = overTime.toFixed(2);
     });
     this.updateTotalHoursMonth();
+    this.updateTotalOverTimeMonth();
   }
 }

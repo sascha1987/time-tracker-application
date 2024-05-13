@@ -10,14 +10,13 @@
     </head>
     <body>
         <div id="animation-bg"></div>
-            <!-- Login -->
+
             <div id="loginForm">
                 <h2>Login Time Tracking</h2>
                 <input type="text" id="username" placeholder="username">
                 <input type="password" id="password" placeholder="password">
                 <button type= "submit" id="loginButton">Login</button>
             </div>
-            <!-- Login -->
 
         <header>
             <div class="header-content">
@@ -40,19 +39,19 @@
                 </select>
                 Year: <input type="text" id="yearInput"readonly>
             </div>
-            <div>
+            <div class="save-login">
                 <button id="saveButton">save</button>
                 <button id="logoutButton">log out</button>
             </div>
         </header>
     
         <section class="time-tracking">
-            <div class="employer">
-                <label>Employer: VP Bank</label>
-            </div>
             <div class="employee">
                 <label>Employee:</label>
                 <span id="employeeName"></span>
+            </div>
+            <div class="employer">
+                <label>Employer : VP Bank AG</label>
             </div>
         </section>
     
@@ -77,6 +76,9 @@
         <footer>
             <div class="footer-total">
                 <span>Total Hours: </span><span id="totalHours">0</span>
+            </div>
+            <div class="footer-total">
+                <span>Total Overtime: </span><span id="totalOvertime">0</span>
             </div>
         </footer>
     
