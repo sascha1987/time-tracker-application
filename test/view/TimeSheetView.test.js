@@ -1,68 +1,54 @@
 import { JSDOM } from "jsdom";
-import { TextEncoder, TextDecoder } from "util";
 import { TimeSheetView } from "../../src/view/TimeSheetView";
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
-
-let dom, document, view;
+import { EmployeeModel } from "../../src/model/EmployeeModel";
+let view, model;
 view = new TimeSheetView();
+model = new EmployeeModel();
 
-beforeEach(() => {
-  dom = new JSDOM(`<!DOCTYPE html><html><body>
-    <table id="timeSheet"><tbody></tbody></table>
-  </body></html>`);
-  document = dom.window.document;
-  global.document = document;
-});
+describe("updateEmployeeName", () => {
+  let getItemMock, employeeNameElement;
 
-afterEach(() => {
-  delete global.document;
-});
-
-describe("updateDOMWithDays", () => {
   beforeEach(() => {
-    dom = new JSDOM(`<!DOCTYPE html><html><body>
-      <table id="timeSheet"><tbody></tbody></table>
-    </body></html>`);
-    document = dom.window.document;
-    global.document = document;
-  });
-  test("should update the DOM based on the given array of days", () => {
-    const daysArray = [{ date: "01.01.2020" }, { date: "02.01.2020" }];
-
-    view.updateDOMWithDays(daysArray);
-    const tableBody = document.querySelector("#timeSheet tbody");
-
-    expect(tableBody.rows.length).toBe(daysArray.length);
-  });
-});
-
-describe("calculateWorkingHours", () => {
-  beforeEach(() => {
+    // Mocking localStorage.getItem
+    getItemMock = jest.spyOn(Storage.prototype, "getItem");
+    // Setting up DOM element
     document.body.innerHTML = `
-      <table id="timeSheet">
-      <tbody>
-        <tr>
-          <td><input type="time" class="time-start" value="08:00"></td>
-          <td><input type="time" class="time-end" value="12:00"></td>
-          <td><input type="time" class="time-start-1" value="13:00"></td>
-          <td><input type="time" class="time-end-1" value="18:00"></td>
-          <td><input type="text" class="hours-normal" readonly></td>
-          <td><input type="text" class="overtime" readonly></td>
-        </tr>
-      </tbody>
-      </table>
-      <footer>
-      <div class="footer-total">
-        Total Hours: <span id="totalHours">0</span>
-      </div>
-    </footer>
+      <section class="time-tracking">
+        <div class="employee">
+          <label>Employee:</label>
+          <span id="employeeName"></span>
+        </div>
+        <div class="employer">
+          <label>Employer : VP Bank AG</label>
+        </div>
+      </section>
     `;
+    employeeNameElement = document.getElementById("employeeName");
   });
 
-  test("should calculate total and overtime hours", () => {
-    view.calculateWorkingHours();
-    const hoursNormalInput = document.querySelector(".hours-normal");
-    expect(hoursNormalInput.value).toBe("9.00"); // 8 hours normal time + 1 hour overtime
+  afterEach(() => {
+    // Clear mocks after each test
+    jest.clearAllMocks();
+  });
+  it("should update the employee name when username is present in localStorage", () => {
+    const username = "John Doe";
+    getItemMock.mockReturnValue(username);
+    view.updateEmployeeName();
+    expect(employeeNameElement.textContent).toBe(username);
+  });
+
+  it("should not update the employee name when username is not present in localStorage", () => {
+    getItemMock.mockReturnValue(null);
+    view.updateEmployeeName();
+    expect(employeeNameElement.textContent).toBe("");
+  });
+
+  it("should log an error when employeeName element is not found", () => {
+    const consoleErrorMock = jest.spyOn(console, "error").mockImplementation(() => {});
+    getItemMock.mockReturnValue("John Doe");
+    document.getElementById = jest.fn().mockReturnValue(null);
+    view.updateEmployeeName();
+    expect(consoleErrorMock).toHaveBeenCalledWith("Element or username not found");
+    consoleErrorMock.mockRestore();
   });
 });

@@ -6,37 +6,32 @@ export class TimeSheetController {
     this.model = new EmployeeModel();
     this.view = new TimeSheetView(this);
     this.handleTimeSheetChanges = this.handleTimeSheetChanges.bind(this);
+    this.saveTimeSheetData = this.saveTimeSheetData.bind(this);
+    this.fetchAndDisplayTimeSheetData = this.fetchAndDisplayTimeSheetData.bind(this);
   }
 
   updateDays() {
+    console.log("Updating days called");
     const month = parseInt(document.getElementById("monthInput").value, 10) - 1;
     const year = parseInt(document.getElementById("yearInput").value, 10);
+    this.fetchAndDisplayTimeSheetData(month, year);
     const daysArray = this.model.calculateDaysForMonth(year, month);
     this.view.updateDOMWithDays(daysArray);
-    this.fetchAndDisplayTimeSheetData();
   }
 
   async login() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
-
     try {
-      const response = await fetch("http://localhost:5500/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
+      const data = await this.model.login(username, password);
       if (data.success) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("username", data.username);
         this.view.hideContent();
         this.view.updateEmployeeName();
-        this.fetchAndDisplayTimeSheetData();
+        await this.fetchAndDisplayTimeSheetData();
         this.view.showContent();
+        this.init();
       } else {
         alert("Login fehlgeschlagen");
       }
@@ -49,44 +44,26 @@ export class TimeSheetController {
     localStorage.removeItem("token");
     window.location.reload();
   }
-  async checkAuthenticationStatus() {
-    if (typeof localStorage !== "undefined") {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        this.view.hideContent();
-        return;
-      }
-      try {
-        const response = await fetch("http://localhost:5500/verify-token", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.ok) {
-          this.view.showContent();
-          this.view.updateEmployeeName();
-        } else {
-          throw new Error("Token validation failed");
-        }
-      } catch (error) {
-        console.error("Fehler bei der Token-Überprüfung:", error);
-        localStorage.removeItem("token");
-        this.view.hideContent();
-      }
-    }
-  }
-  fetchProtectedData() {
+
+  async verifyUserAuthentication() {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:5500/protected", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error("Fehler:", error));
+    if (!token) {
+      this.view.hideContent();
+      return;
+    }
+    try {
+      const isValid = await this.model.validateToken(token);
+      if (isValid) {
+        this.view.showContent();
+        this.view.updateEmployeeName();
+      } else {
+        throw new Error("Token validation failed");
+      }
+    } catch (error) {
+      console.error("Token validation error:", error);
+      localStorage.removeItem("token");
+      this.view.hideContent();
+    }
   }
 
   init() {
@@ -96,7 +73,7 @@ export class TimeSheetController {
       document.getElementById("loginButton")?.addEventListener("click", () => this.login());
       document.getElementById("logoutButton")?.addEventListener("click", () => this.logOut());
       document.getElementById("timeSheet")?.addEventListener("change", (event) => this.handleTimeSheetChanges(event));
-      this.checkAuthenticationStatus();
+      this.verifyUserAuthentication();
       const date = new Date();
       document.getElementById("monthInput").value = date.getMonth() + 1;
       document.getElementById("yearInput").value = date.getFullYear();
@@ -116,73 +93,51 @@ export class TimeSheetController {
       this.view.calculateWorkingHours();
     }
   }
-  saveTimeSheetData() {
-    const rows = document.getElementById("timeSheet").querySelectorAll("tbody tr");
-    const timeSheetData = Array.from(rows).map((row) => ({
-      date: row.querySelector(".date").innerText,
-      startTime: row.querySelector(".time-start").value,
-      endTime: row.querySelector(".time-end").value,
-      startTime1: row.querySelector(".time-start-1").value,
-      endTime1: row.querySelector(".time-end-1").value,
-      hoursNormal: row.querySelector(".hours-normal").value,
-      overtime: row.querySelector(".overtime").value,
-      comments: row.querySelector(".comments").value,
-    }));
-    fetch("http://localhost:5500/save-timesheet", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ timeSheetData }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        alert("Data stored");
-      })
-      .catch((error) => {
-        console.error("Error while saving data: ", error);
-        alert("Error while saving data");
-      });
+  async saveTimeSheetData() {
+    try {
+      const token = localStorage.getItem("token");
+      const rows = document.getElementById("timeSheet").querySelectorAll("tbody tr");
+      const timeSheetData = Array.from(rows).map((row) => ({
+        date: row.querySelector(".date").innerText,
+        startTime: row.querySelector(".time-start").value,
+        endTime: row.querySelector(".time-end").value,
+        startTime1: row.querySelector(".time-start-1").value,
+        endTime1: row.querySelector(".time-end-1").value,
+        hoursNormal: row.querySelector(".hours-normal").value,
+        overtime: row.querySelector(".overtime").value,
+        comments: row.querySelector(".comments").value,
+      }));
+
+      await this.model.saveTimeSheetData(timeSheetData, token);
+      alert("Data stored");
+    } catch (error) {
+      console.error("Error while saving data: ", error);
+      alert("Error while saving data");
+    }
   }
-  fetchAndDisplayTimeSheetData() {
-    const token = localStorage.getItem("token");
-    if (!token) return;
 
-    fetch("http://localhost:5500/get-timesheet", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const tableBody = document.getElementById("timeSheet").querySelector("tbody");
-        data.forEach((item) => {
-          // Converting date from database to GUI format
-          const dbDate = new Date(item.date);
-          const formattedDate = `${dbDate.getDate().toString().padStart(2, "0")}.${(dbDate.getMonth() + 1)
-            .toString()
-            .padStart(2, "0")}.${dbDate.getFullYear()}`;
-
-          let found = false;
-          tableBody.querySelectorAll("tr").forEach((row) => {
-            if (row.querySelector(".date").innerText === formattedDate) {
-              row.querySelector(".time-start").value = item.startTime === "00:00:00" ? "" : item.startTime;
-              row.querySelector(".time-end").value = item.endTime === "00:00:00" ? "" : item.endTime;
-              row.querySelector(".time-start-1").value = item.startTime1 === "00:00:00" ? "" : item.startTime1;
-              row.querySelector(".time-end-1").value = item.endTime1 === "00:00:00" ? "" : item.endTime1;
-              row.querySelector(".hours-normal").value = item.hoursNormal || "";
-              row.querySelector(".overtime").value = item.overtime || "";
-              row.querySelector(".comments").value = item.comments || "";
-              found = true;
-            }
-          });
-        });
-        this.view.updateTotalHoursMonth();
-      })
-      .catch((error) => {
-        console.error("Error when retrieving data:", error);
+  async fetchAndDisplayTimeSheetData(month, year) {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return;
+      }
+      const data = await this.model.fetchTimeSheetData(token, month, year);
+      // Check if for the given month we have data in db
+      // if not call calculateDaysForMonth
+      const filteredData = data.filter((item) => {
+        const itemDate = new Date(item.date);
+        return itemDate.getMonth() === month && itemDate.getFullYear() === year;
       });
+
+      if (filteredData.length > 0) {
+        this.view.displayTimeSheetData(filteredData, month, year);
+      } else {
+        const daysArray = this.model.calculateDaysForMonth(year, month);
+        this.view.updateDOMWithDays(daysArray);
+      }
+    } catch (error) {
+      console.error("Error when retrieving data:", error);
+    }
   }
 }
