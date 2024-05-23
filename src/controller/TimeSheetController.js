@@ -14,14 +14,12 @@ export class TimeSheetController {
     console.log("Updating days called");
     const month = parseInt(document.getElementById("monthInput").value, 10) - 1;
     const year = parseInt(document.getElementById("yearInput").value, 10);
-    //    console.log("Updating days for month:", month + 1, "and year:", year);
     this.fetchAndDisplayTimeSheetData(month, year);
     const daysArray = this.model.calculateDaysForMonth(year, month);
     this.view.updateDOMWithDays(daysArray);
   }
 
   async login() {
-    // console.log("login called");
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
     try {
@@ -67,21 +65,8 @@ export class TimeSheetController {
       this.view.hideContent();
     }
   }
-  // fetchProtectedData() {
-  //   const token = localStorage.getItem("token");
-  //   fetch("http://localhost:5500/protected", {
-  //     method: "GET",
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => console.log(data))
-  //     .catch((error) => console.error("Fehler:", error));
-  // }
 
   init() {
-    // console.log("init called");
     if (typeof document !== "undefined") {
       document.getElementById("monthInput")?.addEventListener("change", () => this.updateDays());
       document.getElementById("yearInput")?.addEventListener("change", () => this.updateDays());
@@ -151,8 +136,6 @@ export class TimeSheetController {
         const daysArray = this.model.calculateDaysForMonth(year, month);
         this.view.updateDOMWithDays(daysArray);
       }
-
-      //    this.view.displayTimeSheetData(data, month, year);
     } catch (error) {
       console.error("Error when retrieving data:", error);
     }

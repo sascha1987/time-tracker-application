@@ -3,6 +3,13 @@ export class TimeSheetView {
   constructor(controller) {
     this.controller = controller;
     this.model = new EmployeeModel();
+    //TEST
+    // const table = document.createElement("table");
+    // table.id = "timeSheet";
+
+    // const tableBody = document.createElement("tbody");
+    // table.appendChild(tableBody);
+    // this.tbody = tableBody;
   }
 
   displayTimeSheetData(data, month, year) {
@@ -38,6 +45,8 @@ export class TimeSheetView {
 
   updateDOMWithDays(daysArray) {
     const tableBody = document.getElementById("timeSheet").querySelector("tbody");
+    console.log("tableBody", tableBody);
+
     tableBody.innerHTML = "";
     daysArray.forEach((day) => {
       const row = tableBody.insertRow();
@@ -104,7 +113,6 @@ export class TimeSheetView {
   }
 
   updateTotalOverTimeMonth() {
-    console.log("OverTimeCalc called");
     const rows = document.querySelectorAll("#timeSheet tbody tr");
     let totalOvertimeForMonth = 0;
 
@@ -116,7 +124,6 @@ export class TimeSheetView {
 
     const totalOverTimeDisplay = document.getElementById("totalOvertime");
     totalOverTimeDisplay.textContent = totalOvertimeForMonth.toFixed(2);
-    console.log("OverTime: ", totalOvertimeForMonth.toFixed(2));
   }
 
   calculateWorkingHours() {
@@ -151,19 +158,8 @@ export class TimeSheetView {
         const diff1 = (end1 - start1) / (1000 * 60 * 60);
         totalHours += diff1;
       }
-      // if (totalHours > 0) {
-      //   hoursNormal.value = totalHours.toFixed(2);
-      // } else {
-      //   hoursNormal.value = "";
-      // }
       const normalWorkingHours = 8 + 24 / 60;
       let overTime = totalHours - normalWorkingHours;
-      // if (totalHours > normalWorkingHours) {
-      //   overTime = totalHours - normalWorkingHours;
-      // } else {
-      //   overTime = 0;
-      // }
-      // hoursNormal
       if (totalHours > 0) {
         hoursNormal.value = totalHours.toFixed(2);
         overTimeCell.value = overTime.toFixed(2);
@@ -171,8 +167,6 @@ export class TimeSheetView {
         hoursNormal.value = "";
         overTimeCell.value = "";
       }
-      // overTimeCell
-      // overTimeCell.value = overTime.toFixed(2);
     });
     this.updateTotalHoursMonth();
     this.updateTotalOverTimeMonth();

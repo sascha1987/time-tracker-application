@@ -6,7 +6,7 @@ export class EmployeeModel {
       const formattedDate = `${day.toString().padStart(2, "0")}.${(month + 1).toString().padStart(2, "0")}.${year}`;
       daysArray.push({ date: formattedDate });
     }
-    console.log("returned days Array from calculateDaysForMonth", daysArray);
+    //   console.log("returned days Array from calculateDaysForMonth", daysArray);
     return daysArray;
   }
 
