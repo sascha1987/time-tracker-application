@@ -229,6 +229,21 @@ footer {
     margin-left: 5px;
 }
 
+#exportPdfButton {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background: white;
+    color:#00376e;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 @media (max-width: 600px) {
     .footer-total {
         font-size: 1rem;

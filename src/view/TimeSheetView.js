@@ -3,13 +3,6 @@ export class TimeSheetView {
   constructor(controller) {
     this.controller = controller;
     this.model = new EmployeeModel();
-    //TEST
-    // const table = document.createElement("table");
-    // table.id = "timeSheet";
-
-    // const tableBody = document.createElement("tbody");
-    // table.appendChild(tableBody);
-    // this.tbody = tableBody;
   }
 
   displayTimeSheetData(data, month, year) {
