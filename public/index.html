@@ -7,6 +7,8 @@
         <link rel="stylesheet" href="./css/style.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
+        <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+
     </head>
     <body>
         <div id="animation-bg"></div>
@@ -80,6 +82,7 @@
             <div class="footer-total">
                 <span>Total Overtime: </span><span id="totalOvertime">0</span>
             </div>
+            <button id="exportPdfButton">Export to PDF</button>
         </footer>
     
         <script type="module">

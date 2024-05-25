@@ -80,6 +80,7 @@ export class TimeSheetController {
       this.updateDays();
 
       document.getElementById("saveButton")?.addEventListener("click", this.saveTimeSheetData);
+      document.getElementById("exportPdfButton").addEventListener("click", () => this.generatePDF());
     }
   }
 
@@ -139,5 +140,48 @@ export class TimeSheetController {
     } catch (error) {
       console.error("Error when retrieving data:", error);
     }
+  }
+  generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+
+    //space between columns
+    const columnWidths = [30, 20, 20, 20, 20, 20, 20, 50];
+
+    // Set positions of column headers
+    const headers = ["Date", "Start", "End", "Start", "End", "Hours", "Overtime", "Comments"];
+    let xPosition = 10; // Start position for the first column
+
+    // Header
+    headers.forEach((header, index) => {
+      doc.text(header, xPosition, 10);
+      xPosition += columnWidths[index];
+    });
+
+    const rows = document.querySelectorAll("#timeSheet tbody tr");
+    let yPosition = 20; // Start position for the first line of data
+
+    rows.forEach((row) => {
+      const cells = row.querySelectorAll("td");
+      xPosition = 10;
+      cells.forEach((cell, index) => {
+        let cellText = cell.querySelector("input") ? cell.querySelector("input").value : cell.textContent.trim();
+        doc.text(cellText, xPosition, yPosition);
+        xPosition += columnWidths[index];
+      });
+      yPosition += 5; // Increasing the y-position for the next line
+    });
+    yPosition += 10;
+
+    const totalHours = document.getElementById("totalHours").textContent;
+    const totalOvertime = document.getElementById("totalOvertime").textContent;
+
+    doc.text(`Total Hours: ${totalHours}`, 10, yPosition);
+    doc.text(`Total Overtime: ${totalOvertime}`, 10, yPosition + 10);
+
+    doc.save("timesheet.pdf");
   }
 }
