@@ -10,6 +10,7 @@
 h1 {
     font-size: 40px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding-bottom: 20px;
 }
 
 body {
@@ -18,13 +19,32 @@ body {
     padding: 20px;
 }
 
-.header-content h1 {
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.header-left h1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     text-align: center;
     margin: 0;
     color: var(--primary-color);
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.header-content h1 {
+    text-align: center;
+    margin: 0;
+    color: var(--primary-color);
+    display: flex;
     gap: 30px;
 }
 
@@ -38,6 +58,18 @@ body {
     transform: rotate(180deg); 
 }
 
+.header-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    background: var(--header-footer-bg-color);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    gap: 10px;
+}
+
 h2 {
     width: 100%;
     text-align:center;
@@ -45,7 +77,7 @@ h2 {
 
 #saveButton, #logoutButton {
     padding: 10px 20px;
-    margin-top: 10px;
+    margin-top: 0px;
     background: #00376e;
     color: white;
     border: none;
@@ -77,45 +109,35 @@ h2 {
 
 .save-login{
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
 }
 
-header, .time-tracking, table, footer {
+header, table {
     background: var(--header-footer-bg-color);
     margin-bottom: 20px;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
-
-.time-tracking {
-    background-color: var(--header-footer-bg-color);
-    border-radius: 8px;
-    padding: 20px; 
-    margin-bottom: 20px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.time-tracking label {
-    margin-bottom: 5px;
-    color: #00376e; 
-    font-size: 1.5rem; 
-  }
   
-  .time-tracking #employeeName, #vpbank {
+#employeeName, #vpbank {
     font-weight: bold;
     color: var(--primary-color);
-  }
+ }
+
+.employer {
+    margin-left: 0px;
+}
 
 .employee label {
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .employer label {
-    margin-right: 10px;
-}
-
-.time-tracking div {
-    margin-bottom: 10px;
+    margin-right: 5px;
 }
 
 .date-selection {
@@ -151,13 +173,6 @@ td {
 
 tr:nth-child(even) {
     background-color: var(--secondary-color);
-}
-
-@media screen and (max-width: 600px) {
-    .time-tracking {
-        flex-direction: column;
-        align-items: center;
-    }
 }
 
 #loginForm {
@@ -221,25 +236,14 @@ tr:nth-child(even) {
 
 }
 
-footer {
-    background: #00376e;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: 'Arial', sans-serif; 
-}
-
-.footer-total {
-    font-size: 1.2rem;
-    margin-top: 5px;
-    border-bottom: 2px dashed #ffffff50;
-    padding-top: 10px;
-}
-
-#totalHours, #totalOvertime {
+#totalHours{
     font-weight: bold;
-    margin-left: 5px;
+    margin-left: 30px;
+}
+
+#totalOvertime {
+    font-weight: bold;
+    margin-left: 10px;    
 }
 
 #exportPdfButton {
@@ -262,16 +266,9 @@ footer {
     padding-left: 10px;
 }
 
-
 #exportPdfButton:hover{
     background-image: linear-gradient(#00376e, black);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transform: translateY(-2px);
     color: white;
-}
-
-@media (max-width: 600px) {
-    .footer-total {
-        font-size: 1rem;
-    }
 }
