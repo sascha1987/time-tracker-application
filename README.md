@@ -13,3 +13,102 @@
 ### Diplomarbeit 2024 S. Fluor
 
 ## Einleitung
+
+## Einleitung
+
+Diese Anwendung dient zur digitalen Erfassung und Verwaltung von Arbeitszeiten. Sie wurde im Rahmen der Diplomarbeit 2024 an der Höheren Fachschule Südostschweiz entwickelt und soll die Effizienz und Datenintegrität bei der Arbeitserfassung in der VP Bank AG verbessern.
+
+## Installation
+
+### Voraussetzungen
+
+- Node.js
+- MySQL
+
+### Installation der Dependencies
+
+Führen Sie den folgenden Befehl aus, um alle benötigten Dependencies zu installieren:
+
+```bash
+npm install
+
+1. Erstellung der Datenbank
+
+CREATE DATABASE IF NOT EXISTS Timerecording;
+
+2. Wechseln Sie zur erstellten Datenbank:
+
+USE Timerecording;
+
+3. Erstellen Sie die Tabelle für die Benutzer:
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+4. Fügen Sie einen Testbenutzer hinzu:
+
+INSERT INTO users (id, username, password)
+VALUES (1, 'Sascha', '123456');  -- Das Passwort muss gehasht sein, verwenden Sie dafür "HelperHashPassword.js"
+
+5. Ausführen von 'node HelperHashPassword.js'
+
+6. Überprüfen Sie die Einträge in der Tabelle:
+
+SELECT * FROM users;
+
+7. Stellen Sie sicher, dass der MySQL-Benutzer korrekt konfiguriert ist:
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'XXPASSWORDXX';
+FLUSH PRIVILEGES;
+
+8. Erstellen Sie die Tabelle für die Arbeitszeiterfassung:
+
+CREATE TABLE timesheet (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    date DATE NOT NULL,
+    startTime TIME NOT NULL,
+    endTime TIME NOT NULL,
+    startTime1 TIME NOT NULL,
+    endTime1 TIME NOT NULL,
+    hoursNormal DECIMAL(5,2) NOT NULL,
+    overtime DECIMAL(5,2) NOT NULL,
+    comments VARCHAR(255),
+    FOREIGN KEY (userId) REFERENCES users(id)
+);
+
+9. Zum Starten der Applikation verwenden Sie den folgenden Befehl:
+
+'npm start'
+
+10. Um die Applikation zu testen, führen Sie den folgenden Befehl aus:
+
+'npm test'
+
+-----------------------------
+
+Abhängigkeiten
+Die Anwendung verwendet die folgenden Hauptpakete:
+
+express: Webframework für Node.js
+bcrypt: Bibliothek zum Hashen von Passwörtern
+cors: Middleware für Cross-Origin Resource Sharing
+jsonwebtoken: Implementierung von JSON Web Tokens
+jspdf: Bibliothek zur Erzeugung von PDFs
+mysql: MySQL-Client für Node.js
+Entwicklungsabhängigkeiten
+Für die Entwicklung und das Testen der Anwendung werden folgende Pakete verwendet:
+
+@babel/core: Babel-Compiler-Core
+@babel/preset-env: Babel-Preset für die Umgebung
+jest: JavaScript-Testing-Framework
+nodemon: Tool zur automatischen Neustart von Node.js-Anwendungen
+nyc: Code-Coverage-Tool für JavaScript
+Weitere Informationen finden Sie in den Dateien package.json und package-lock.json.
+
+Autoren
+S. Fluor
+```
