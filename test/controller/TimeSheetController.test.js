@@ -27,4 +27,64 @@ describe("logOut", () => {
     expect(removeItemMock).toHaveBeenCalledWith("token");
     expect(window.location.reload).toHaveBeenCalled();
   });
+
+  describe("login", () => {
+    let setItemMock;
+    let usernameInput;
+    let passwordInput;
+
+    beforeEach(() => {
+      setItemMock = jest.spyOn(Storage.prototype, "setItem");
+
+      usernameInput = document.createElement("input");
+      usernameInput.id = "username";
+      document.body.appendChild(usernameInput);
+
+      passwordInput = document.createElement("input");
+      passwordInput.id = "password";
+      document.body.appendChild(passwordInput);
+      jest.clearAllMocks();
+
+      jest.spyOn(window, "alert").mockImplementation(() => {});
+    });
+    afterEach(() => {
+      document.body.removeChild(usernameInput);
+      document.body.removeChild(passwordInput);
+    });
+
+    it("", async () => {
+      const mockData = {
+        success: true,
+        token: "testToken",
+        username: "testUser",
+      };
+      EmployeeModel.mockImplementation(() => {
+        return {
+          login: jest.fn().mockResolvedValue(mockData),
+        };
+      });
+
+      TimeSheetView.prototype.hideContent = jest.fn();
+      TimeSheetView.prototype.updateEmployeeName = jest.fn();
+      TimeSheetView.prototype.showContent = jest.fn();
+
+      const controller = new TimeSheetController();
+
+      controller.fetchAndDisplayTimeSheetData = jest.fn();
+      controller.init = jest.fn();
+
+      usernameInput.value = "testUser";
+      passwordInput.value = "testPassword";
+
+      await controller.login();
+
+      expect(setItemMock).toHaveBeenCalledWith("token", "testToken");
+      expect(setItemMock).toHaveBeenCalledWith("username", "testUser");
+      expect(controller.view.hideContent).toHaveBeenCalled();
+      expect(controller.view.updateEmployeeName).toHaveBeenCalled();
+      expect(controller.fetchAndDisplayTimeSheetData).toHaveBeenCalled();
+      expect(controller.view.showContent).toHaveBeenCalled();
+      expect(controller.init).toHaveBeenCalled();
+    });
+  });
 });
