@@ -60,9 +60,9 @@ INSERT INTO users (id, username, password)
 VALUES (1,'Sascha','123456'),
        (2,'Michael','456789'),
        (3,'Edi','987654');
+```
 
 -- Das Passwort muss gehasht sein, verwenden Sie dafür "HelperHashPassword.js"
-```
 
 5. Ausführen von 'node HelperHashPassword.js'
 
@@ -99,11 +99,11 @@ CREATE TABLE timesheet (
 
 9. Zum Starten der Applikation verwenden Sie den folgenden Befehl:
 
-'npm start'
+`npm start`
 
 10. Um die Applikation zu testen, führen Sie den folgenden Befehl aus:
 
-'npm test'
+`npm test`
 
 ---
 
@@ -112,10 +112,15 @@ CREATE TABLE timesheet (
 Die Anwendung verwendet die folgenden Hauptpakete:
 
 express: Webframework für Node.js
+
 bcrypt: Bibliothek zum Hashen von Passwörtern
+
 cors: Middleware für Cross-Origin Resource Sharing
+
 jsonwebtoken: Implementierung von JSON Web Tokens
+
 jspdf: Bibliothek zur Erzeugung von PDFs
+
 mysql: MySQL-Client für Node.js
 
 ### Entwicklungsabhängigkeiten
@@ -123,10 +128,15 @@ mysql: MySQL-Client für Node.js
 Für die Entwicklung und das Testen der Anwendung werden folgende Pakete verwendet:
 
 @babel/core: Babel-Compiler-Core
+
 @babel/preset-env: Babel-Preset für die Umgebung
+
 jest: JavaScript-Testing-Framework
+
 nodemon: Tool zur automatischen Neustart von Node.js-Anwendungen
+
 nyc: Code-Coverage-Tool für JavaScript
+
 Weitere Informationen finden Sie in den Dateien package.json und package-lock.json.
 
 ### Autor
