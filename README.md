@@ -22,6 +22,7 @@ Diese Anwendung dient zur digitalen Erfassung und Verwaltung von Arbeitszeiten. 
 
 - Node.js
 - MySQL
+- Terminal für die Ausführung der Commands
 
 ### Installation der Dependencies
 
@@ -57,12 +58,15 @@ CREATE TABLE users (
 
 ```bash
 INSERT INTO users (id, username, password)
-VALUES (1,'Sascha','123456'),
-       (2,'Michael','456789'),
-       (3,'Edi','987654');
+VALUES (1, 'Sascha', '123456'),
+       (2, 'Michael', '456789'),
+       (3, 'Edi', '987654'),
+       (4, 'Andrea', '666666'),
+       (5, 'Joao', '333333');
+
 ```
 
--- Das Passwort muss gehasht sein, verwenden Sie dafür "HelperHashPassword.js"
+--> Das Passwort muss gehasht sein, verwenden Sie dafür "HelperHashPassword.js"
 
 5. Ausführen von 'node HelperHashPassword.js'
 

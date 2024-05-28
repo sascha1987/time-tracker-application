@@ -143,13 +143,13 @@ header, table {
 .date-selection {
    vertical-align: top;
    font-weight: bold;
-  }
+}
   
-  select, input[type="text"], input[type="time"] {
+select, input[type="text"], input[type="time"] {
     padding: 5px;
     border-radius: 5px;
     border: 1px solid black;
-  }  
+}  
 
 table {
     width: 100%;
