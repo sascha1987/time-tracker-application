@@ -118,37 +118,28 @@ export class TimeSheetView {
   calculateWorkingHours() {
     const rows = document.getElementById("timeSheet").querySelectorAll("tbody tr");
 
+    // Helper function for calculating the hours between two points in time
+    const calculateHours = (start, end) => {
+      if (!start || !end) return 0;
+      const startDate = new Date(`01/01/2000 ${start}`);
+      const endDate = new Date(`01/01/2000 ${end}`);
+      return (endDate - startDate) / (1000 * 60 * 60);
+    };
+
     Array.from(rows).forEach((row) => {
-      const startTime = row.querySelector(".time-start").value;
-      const endTime = row.querySelector(".time-end").value;
-      const startTime1 = row.querySelector(".time-start-1").value;
-      const endTime1 = row.querySelector(".time-end-1").value;
+      const getValue = (selector) => row.querySelector(selector).value;
+
+      const startTime = getValue(".time-start");
+      const endTime = getValue(".time-end");
+      const startTime1 = getValue(".time-start-1");
+      const endTime1 = getValue(".time-end-1");
       const hoursNormal = row.querySelector(".hours-normal");
       const overTimeCell = row.querySelector(".overtime");
 
-      let totalHours = 0;
-      //morning time
-      if (startTime && endTime) {
-        const start = new Date(`01/01/2000 ${startTime}`);
-        const end = new Date(`01/01/2000 ${endTime}`);
-        const diff = (end - start) / (1000 * 60 * 60);
-        totalHours += diff;
-      }
-      if (totalHours > 0) {
-        hoursNormal.value = totalHours.toFixed(2);
-      } else {
-        hoursNormal.value = "";
-      }
-
-      //time afternoone
-      if (startTime1 && endTime1) {
-        const start1 = new Date(`01/01/2000 ${startTime1}`);
-        const end1 = new Date(`01/01/2000 ${endTime1}`);
-        const diff1 = (end1 - start1) / (1000 * 60 * 60);
-        totalHours += diff1;
-      }
+      const totalHours = calculateHours(startTime, endTime) + calculateHours(startTime1, endTime1);
       const normalWorkingHours = 8 + 24 / 60;
-      let overTime = totalHours - normalWorkingHours;
+      const overTime = totalHours - normalWorkingHours;
+
       if (totalHours > 0) {
         hoursNormal.value = totalHours.toFixed(2);
         overTimeCell.value = overTime.toFixed(2);
@@ -157,6 +148,7 @@ export class TimeSheetView {
         overTimeCell.value = "";
       }
     });
+
     this.updateTotalHoursMonth();
     this.updateTotalOverTimeMonth();
   }

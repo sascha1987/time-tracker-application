@@ -178,9 +178,11 @@ export class TimeSheetController {
 
     const totalHours = document.getElementById("totalHours").textContent;
     const totalOvertime = document.getElementById("totalOvertime").textContent;
+    const employeeName = document.getElementById("employeeName").textContent;
 
     doc.text(`Total Hours: ${totalHours}`, 10, yPosition);
     doc.text(`Total Overtime: ${totalOvertime}`, 10, yPosition + 10);
+    doc.text(`Name: ${employeeName}`, 10, yPosition + 20);
 
     doc.save("timesheet.pdf");
   }
