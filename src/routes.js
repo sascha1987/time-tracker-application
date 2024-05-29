@@ -16,9 +16,7 @@ const authenticateJWT = (req, res, next) => {
       if (err) {
         return res.sendStatus(403);
       }
-      console.log("authHeader", authHeader);
       req.userId = decoded.id;
-      console.log("req.userId:", req.userId);
       next();
     });
   } else {
@@ -36,22 +34,15 @@ router.post("/login", async (req, res) => {
       console.error("Database error: ", err);
       return res.status(500).send({ message: "Server error" });
     }
-    console.log("Database result: ", results);
-    console.log("Database result username: ", username);
-
     if (results.length > 0) {
-      console.log("Hashed password from database: ", results[0].password);
       try {
         const match = await bcrypt.compare(password, results[0].password);
-        console.log("Password comparison result: ", match);
         if (match) {
           const userId = results[0].id;
           const token = jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: "1h" });
           res.send({ success: true, token, username: results[0].username });
         } else {
-          console.log("result_false: ", match);
           res.send({ success: false, message: "Incorrect password" });
-          console.log("res.send: ", res.send);
         }
       } catch (error) {
         console.error("Error during password verification: ", error);
