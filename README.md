@@ -120,7 +120,7 @@ CREATE TABLE timesheet (
 export const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "XXPASSWORDXX", // Passwort aus Punkt 7
+  password: "XXPASSWORDXX",
   database: "Timerecording",
 });
 ```
