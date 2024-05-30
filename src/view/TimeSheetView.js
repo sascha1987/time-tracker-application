@@ -6,7 +6,6 @@ export class TimeSheetView {
   }
 
   displayTimeSheetData(data, month, year) {
-    console.log("displayTimeSheetData called from view");
     const tableBody = document.getElementById("timeSheet").querySelector("tbody");
     tableBody.innerHTML = "";
 
@@ -38,7 +37,6 @@ export class TimeSheetView {
 
   updateDOMWithDays(daysArray) {
     const tableBody = document.getElementById("timeSheet").querySelector("tbody");
-    console.log("tableBody", tableBody);
 
     tableBody.innerHTML = "";
     daysArray.forEach((day) => {
@@ -118,7 +116,7 @@ export class TimeSheetView {
   calculateWorkingHours() {
     const rows = document.getElementById("timeSheet").querySelectorAll("tbody tr");
 
-    // Helper function for calculating the hours between two points in time
+    // Helper function for calculating the hours between start and end
     const calculateHours = (start, end) => {
       if (!start || !end) return 0;
       const startDate = new Date(`01/01/2000 ${start}`);
