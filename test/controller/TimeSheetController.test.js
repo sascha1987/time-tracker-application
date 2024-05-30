@@ -88,3 +88,75 @@ describe("logOut", () => {
     });
   });
 });
+
+describe("handleTimeSheetChanges", () => {
+  let controller;
+  let event;
+
+  beforeEach(() => {
+    controller = new TimeSheetController();
+    controller.view = new TimeSheetView();
+    jest.spyOn(controller.view, "calculateWorkingHours").mockImplementation(() => {});
+
+    event = {
+      target: document.createElement("input"),
+    };
+  });
+
+  it("should call calculateWorkingHours if event target has class 'time-start'", () => {
+    event.target.classList.add("time-start");
+    controller.handleTimeSheetChanges(event);
+    expect(controller.view.calculateWorkingHours).toHaveBeenCalled();
+  });
+
+  it("should call calculateWorkingHours if event target has class 'time-end'", () => {
+    event.target.classList.add("time-end");
+    controller.handleTimeSheetChanges(event);
+    expect(controller.view.calculateWorkingHours).toHaveBeenCalled();
+  });
+});
+
+describe("fetchAndDisplayTimeSheetData", () => {
+  let controller;
+  let mockToken;
+  let mockData;
+  let mockFilteredData;
+
+  beforeEach(() => {
+    controller = new TimeSheetController();
+
+    mockToken = "mockToken";
+    jest.spyOn(Storage.prototype, "getItem").mockReturnValue(mockToken);
+    console.log(jest.spyOn(Storage.prototype, "getItem").mockReturnValue(mockToken));
+
+    mockData = [
+      { date: "2024-05-01", hours: 8 },
+      { date: "2024-05-02", hours: 7 },
+    ];
+
+    mockFilteredData = mockData.filter((item) => {
+      const itemDate = new Date(item.date);
+      return itemDate.getMonth() === 4 && itemDate.getFullYear() === 2024;
+    });
+
+    controller.model = {
+      fetchTimeSheetData: jest.fn().mockResolvedValue(mockData),
+      calculateDaysForMonth: jest.fn().mockReturnValue(["2024-05-01", "2024-05-02", "2024-05-03"]),
+    };
+
+    controller.view = {
+      displayTimeSheetData: jest.fn(),
+      updateDOMWithDays: jest.fn(),
+    };
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should call displayTimeSheetData if data is found for the given month and year", async () => {
+    await controller.fetchAndDisplayTimeSheetData(4, 2024);
+    expect(controller.model.fetchTimeSheetData).toHaveBeenCalledWith(mockToken, 4, 2024);
+    expect(controller.view.displayTimeSheetData).toHaveBeenCalledWith(mockFilteredData, 4, 2024);
+  });
+});

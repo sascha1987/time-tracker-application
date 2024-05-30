@@ -23,6 +23,11 @@ Diese Anwendung dient zur digitalen Erfassung und Verwaltung von Arbeitszeiten. 
 - Node.js
 - MySQL
 - Terminal für die Ausführung der Commands
+- Klonen vom Repository:
+
+```bash
+https://github.com/sascha1987/time-tracker-application.git
+```
 
 ### Installation der Dependencies
 
@@ -32,7 +37,7 @@ Führen Sie den folgenden Befehl aus, um alle benötigten Dependencies zu instal
 npm install
 ```
 
-1. Erstellung der Datenbank
+1. Erstellung der Datenbank in der MySQL Workbench
 
 ```bash
 CREATE DATABASE IF NOT EXISTS Timerecording;
@@ -68,7 +73,7 @@ VALUES (1, 'Sascha', '123456'),
 
 --> Das Passwort muss gehasht sein, verwenden Sie dafür "HelperHashPassword.js"
 
-5. Ausführen von 'node HelperHashPassword.js'
+5. Ausführen von 'node HelperHashPassword.js' im Terminal
 
 6. Überprüfen Sie die Einträge in der Tabelle:
 
@@ -108,6 +113,17 @@ CREATE TABLE timesheet (
 10. Um die Applikation zu testen, führen Sie den folgenden Befehl aus:
 
 `npm test`
+
+11. Stellen Sie sicher, dass die Einstellungen in server.js mit den Einstellungen in MySQL übereinstimmen:
+
+```bash
+export const connection = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "XXPASSWORDXX",
+  database: "Timerecording",
+});
+```
 
 ---
 

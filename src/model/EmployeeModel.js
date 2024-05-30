@@ -6,7 +6,6 @@ export class EmployeeModel {
       const formattedDate = `${day.toString().padStart(2, "0")}.${(month + 1).toString().padStart(2, "0")}.${year}`;
       daysArray.push({ date: formattedDate });
     }
-    //   console.log("returned days Array from calculateDaysForMonth", daysArray);
     return daysArray;
   }
 
@@ -46,7 +45,6 @@ export class EmployeeModel {
   }
 
   async fetchTimeSheetData(token, month, year) {
-    // console.log("Fetching data with token:", token);
     const response = await fetch("http://localhost:5500/get-timesheet", {
       method: "GET",
       headers: {
@@ -55,7 +53,6 @@ export class EmployeeModel {
     });
     if (!response.ok) throw new Error("Failed to fetch data");
     const data = await response.json();
-    //  console.log("Raw Data from server:", data);
     return data;
   }
 }
