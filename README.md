@@ -114,6 +114,17 @@ CREATE TABLE timesheet (
 
 `npm test`
 
+11. Stellen Sie sicher, dass die Einstellungen in server.js mit den Einstellungen in MySQL übereinstimmen:
+
+```bash
+export const connection = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "XXPASSWORDXX", // Passwort aus Punkt 7
+  database: "Timerecording",
+});
+```
+
 ---
 
 ### Abhängigkeiten
