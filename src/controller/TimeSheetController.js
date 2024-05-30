@@ -11,7 +11,6 @@ export class TimeSheetController {
   }
 
   updateDays() {
-    console.log("Updating days called");
     const month = parseInt(document.getElementById("monthInput").value, 10) - 1;
     const year = parseInt(document.getElementById("yearInput").value, 10);
     this.fetchAndDisplayTimeSheetData(month, year);
@@ -33,10 +32,10 @@ export class TimeSheetController {
         this.view.showContent();
         this.init();
       } else {
-        alert("Login fehlgeschlagen");
+        alert("Login failed");
       }
     } catch (error) {
-      console.error("Fehler beim Login:", error);
+      console.error("Error during login:", error);
     }
   }
 
@@ -94,6 +93,7 @@ export class TimeSheetController {
       this.view.calculateWorkingHours();
     }
   }
+
   async saveTimeSheetData() {
     try {
       const token = localStorage.getItem("token");
@@ -141,6 +141,7 @@ export class TimeSheetController {
       console.error("Error when retrieving data:", error);
     }
   }
+
   generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
